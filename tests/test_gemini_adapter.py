@@ -318,6 +318,15 @@ def test_prompt_2_schema_hint_hardens_sufficiency_gate_shape() -> None:
     assert "staleness_check must be an object" in payload_description
     assert "Do not emit shorthand fields such as reason or missing_fields" in payload_description
     assert "If the Stage A status is READY, continue to Stage B and return contract_analysis" in payload_description
+    assert "outcome must be ANALYSIS_COMPLETE or NO_TRADE only, never READY" in payload_description
+    assert "market_regime must use only these exact literals" in payload_description
+    assert "copy one literal verbatim" in payload_description
+    assert "value_context.relative_to_prior_value_area must use only above, inside, or below" in payload_description
+    assert "value_context.relative_to_current_developing_value must use only above_vah, inside_value, or below_val" in payload_description
+    assert "key_levels must be an object" in payload_description
+    assert "structural_notes must be a single string" in payload_description
+    assert "assumptions must be a JSON array of strings" in payload_description
+    assert "Do not leak Stage A fields such as status" in payload_description
 
 
 def test_prompt_8_schema_hint_hardens_no_trade_shape() -> None:
@@ -635,6 +644,112 @@ def test_live_like_stage_a_string_staleness_check_is_rejected() -> None:
     message = str(exc_info.value)
     assert "staleness_check" in message
     assert "valid dictionary" in message
+
+
+def test_live_like_stage_b_hybrid_payload_after_ready_gate_is_rejected() -> None:
+    invalid_payload = {
+        "contract": "ES",
+        "timestamp": "2026-01-14T15:05:00Z",
+        "outcome": "READY",
+        "directional_bias": "bullish",
+        "evidence_score": 8,
+        "confidence_band": "HIGH",
+        "conflicting_signals": [],
+        "structural_notes": [
+            "The session exhibited a strong positive breadth backdrop."
+        ],
+        "key_levels": [
+            {"price": 4498.0, "type": "resistance", "context": "prior_day_high"},
+            {"price": 4488.0, "type": "support", "context": "VWAP"},
+        ],
+    }
+    client = FakeGeminiClient(_envelope("contract_analysis", invalid_payload))
+    adapter = GeminiResponsesAdapter(client=client, model="gemini-3.1-pro-preview")
+
+    with pytest.raises(ValueError) as exc_info:
+        execute_prompt(
+            prompt_id=2,
+            runtime_inputs=_stage_ab_inputs_trade_friendly_es(),
+            model_adapter=adapter,
+        )
+
+    message = str(exc_info.value)
+    assert "market_regime" in message
+    assert "value_context" in message
+    assert "ANALYSIS_COMPLETE" in message
+    assert "NO_TRADE" in message
+    assert "key_levels" in message
+    assert "structural_notes" in message
+
+
+def test_live_like_stage_b_market_regime_near_synonym_is_rejected() -> None:
+    invalid_payload = _valid_contract_analysis("ES")
+    invalid_payload["market_regime"] = "trend_up"
+    client = FakeGeminiClient(_envelope("contract_analysis", invalid_payload))
+    adapter = GeminiResponsesAdapter(client=client, model="gemini-3.1-pro-preview")
+
+    with pytest.raises(ValueError) as exc_info:
+        execute_prompt(
+            prompt_id=2,
+            runtime_inputs=_stage_ab_inputs_trade_friendly_es(),
+            model_adapter=adapter,
+        )
+
+    assert "trending_up" in str(exc_info.value)
+
+
+def test_live_like_stage_b_prior_value_area_near_synonym_is_rejected() -> None:
+    invalid_payload = _valid_contract_analysis("ES")
+    invalid_payload["value_context"]["relative_to_prior_value_area"] = "overlapping_higher"
+    client = FakeGeminiClient(_envelope("contract_analysis", invalid_payload))
+    adapter = GeminiResponsesAdapter(client=client, model="gemini-3.1-pro-preview")
+
+    with pytest.raises(ValueError) as exc_info:
+        execute_prompt(
+            prompt_id=2,
+            runtime_inputs=_stage_ab_inputs_trade_friendly_es(),
+            model_adapter=adapter,
+        )
+
+    message = str(exc_info.value)
+    assert "above" in message
+    assert "inside" in message
+    assert "below" in message
+
+
+def test_live_like_stage_b_current_developing_value_near_synonym_is_rejected() -> None:
+    invalid_payload = _valid_contract_analysis("ES")
+    invalid_payload["value_context"]["relative_to_current_developing_value"] = "above"
+    client = FakeGeminiClient(_envelope("contract_analysis", invalid_payload))
+    adapter = GeminiResponsesAdapter(client=client, model="gemini-3.1-pro-preview")
+
+    with pytest.raises(ValueError) as exc_info:
+        execute_prompt(
+            prompt_id=2,
+            runtime_inputs=_stage_ab_inputs_trade_friendly_es(),
+            model_adapter=adapter,
+        )
+
+    message = str(exc_info.value)
+    assert "above_vah" in message
+    assert "inside_value" in message
+    assert "below_val" in message
+
+
+def test_live_like_stage_b_scalar_assumptions_is_rejected() -> None:
+    invalid_payload = _valid_contract_analysis("ES")
+    invalid_payload["assumptions"] = "Assume continuation."
+    client = FakeGeminiClient(_envelope("contract_analysis", invalid_payload))
+    adapter = GeminiResponsesAdapter(client=client, model="gemini-3.1-pro-preview")
+
+    with pytest.raises(ValueError) as exc_info:
+        execute_prompt(
+            prompt_id=2,
+            runtime_inputs=_stage_ab_inputs_trade_friendly_es(),
+            model_adapter=adapter,
+        )
+
+    assert "valid list" in str(exc_info.value)
 
 
 def test_default_client_fails_closed_when_env_var_is_absent(monkeypatch: pytest.MonkeyPatch) -> None:

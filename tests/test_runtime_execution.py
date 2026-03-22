@@ -375,6 +375,132 @@ def test_stage_ab_rendered_prompt_forbids_ready_early_stop() -> None:
         in result.rendered_prompt
     )
     assert "Continue to Part 2 and return contract_analysis JSON only." in result.rendered_prompt
+    assert "Always emit the full contract_analysis schema fields" in result.rendered_prompt
+    assert "outcome must be Stage B outcome only: ANALYSIS_COMPLETE or NO_TRADE. Never emit READY in Stage B." in result.rendered_prompt
+    assert "key_levels must be the schema object" in result.rendered_prompt
+    assert "structural_notes must be a single string." in result.rendered_prompt
+    assert "Copy one literal verbatim from this list." in result.rendered_prompt
+    assert "Do not emit assumptions as a scalar string, sentence, or paragraph." in result.rendered_prompt
+
+
+def test_rejects_live_like_stage_b_hybrid_payload_after_ready_gate() -> None:
+    invalid_output = {
+        "contract": "ES",
+        "timestamp": "2026-01-14T15:05:00Z",
+        "outcome": "READY",
+        "directional_bias": "bullish",
+        "evidence_score": 8,
+        "confidence_band": "HIGH",
+        "conflicting_signals": [],
+        "structural_notes": [
+            "The session exhibited a strong positive breadth backdrop."
+        ],
+        "key_levels": [
+            {"price": 4498.0, "type": "resistance", "context": "prior_day_high"},
+            {"price": 4488.0, "type": "support", "context": "VWAP"},
+        ],
+    }
+    adapter = FakeStructuredAdapter(invalid_output)
+
+    with pytest.raises(ValueError) as exc_info:
+        execute_prompt(
+            prompt_id=2,
+            runtime_inputs=_stage_ab_inputs_trade_friendly_es(),
+            model_adapter=adapter,
+        )
+
+    message = str(exc_info.value)
+    assert "market_regime" in message
+    assert "value_context" in message
+    assert "ANALYSIS_COMPLETE" in message
+    assert "NO_TRADE" in message
+    assert "key_levels" in message
+    assert "structural_notes" in message
+    assert "status" in message or "READY" in message
+
+
+def test_rejects_stage_b_market_regime_near_synonym() -> None:
+    invalid_output = _valid_contract_analysis("ES")
+    invalid_output["market_regime"] = "trend_up"
+    adapter = FakeStructuredAdapter(invalid_output)
+
+    with pytest.raises(ValueError) as exc_info:
+        execute_prompt(
+            prompt_id=2,
+            runtime_inputs=_stage_ab_inputs_trade_friendly_es(),
+            model_adapter=adapter,
+        )
+
+    assert "trending_up" in str(exc_info.value)
+
+
+def test_rejects_stage_b_prior_value_area_near_synonym() -> None:
+    invalid_output = _valid_contract_analysis("ES")
+    invalid_output["value_context"]["relative_to_prior_value_area"] = "overlapping_higher"
+    adapter = FakeStructuredAdapter(invalid_output)
+
+    with pytest.raises(ValueError) as exc_info:
+        execute_prompt(
+            prompt_id=2,
+            runtime_inputs=_stage_ab_inputs_trade_friendly_es(),
+            model_adapter=adapter,
+        )
+
+    message = str(exc_info.value)
+    assert "above" in message
+    assert "inside" in message
+    assert "below" in message
+
+
+def test_rejects_stage_b_current_developing_value_near_synonym() -> None:
+    invalid_output = _valid_contract_analysis("ES")
+    invalid_output["value_context"]["relative_to_current_developing_value"] = "above"
+    adapter = FakeStructuredAdapter(invalid_output)
+
+    with pytest.raises(ValueError) as exc_info:
+        execute_prompt(
+            prompt_id=2,
+            runtime_inputs=_stage_ab_inputs_trade_friendly_es(),
+            model_adapter=adapter,
+        )
+
+    message = str(exc_info.value)
+    assert "above_vah" in message
+    assert "inside_value" in message
+    assert "below_val" in message
+
+
+def test_rejects_stage_b_scalar_assumptions() -> None:
+    invalid_output = _valid_contract_analysis("ES")
+    invalid_output["assumptions"] = "Assume continuation."
+    adapter = FakeStructuredAdapter(invalid_output)
+
+    with pytest.raises(ValueError) as exc_info:
+        execute_prompt(
+            prompt_id=2,
+            runtime_inputs=_stage_ab_inputs_trade_friendly_es(),
+            model_adapter=adapter,
+        )
+
+    assert "valid list" in str(exc_info.value)
+
+
+def test_accepts_stage_b_exact_valid_literals_on_es_case() -> None:
+    adapter = FakeStructuredAdapter(_valid_contract_analysis("ES"))
+
+    result = execute_prompt(
+        prompt_id=2,
+        runtime_inputs=_stage_ab_inputs_trade_friendly_es(),
+        model_adapter=adapter,
+    )
+
+    assert result.validated_output.market_regime == "range_bound"
+    assert result.validated_output.value_context.relative_to_prior_value_area == "inside"
+    assert (
+        result.validated_output.value_context.relative_to_current_developing_value
+        == "inside_value"
+    )
+    assert result.validated_output.assumptions == []
 
 
 def test_stage_ab_rendered_prompt_requires_full_sufficiency_gate_output_shape() -> None:

@@ -153,8 +153,21 @@ Part 1 output: sufficiency_gate_output JSON only. If status != READY, stop and d
 PART 2: CONTRACT MARKET READ (Stage B)
 
 Only execute this if Part 1 returned READY.
+If Part 1 returned READY, the final answer must be contract_analysis JSON only. Do not repeat, wrap, or merge the Stage A sufficiency_gate_output into the final answer.
 
 Stage B shared requirements:
+- Always emit the full contract_analysis schema fields: contract, timestamp, market_regime, directional_bias, key_levels, evidence_score, confidence_band, value_context, structural_notes, outcome, conflicting_signals, assumptions.
+- market_regime is required and must use only these exact literals: trending_up, trending_down, range_bound, breakout, breakdown, choppy, unclear. Copy one literal verbatim from this list. Do not invent near-synonyms, shorthand, camel-case, or alternate spellings such as trend_up.
+- value_context is required and must be the schema object with relative_to_prior_value_area, relative_to_current_developing_value, relative_to_vwap, and relative_to_prior_day_range.
+- value_context.relative_to_prior_value_area must use only these exact literals: above, inside, below. Copy one literal verbatim from this list. Do not invent near-synonyms such as overlapping_higher.
+- value_context.relative_to_current_developing_value must use only these exact literals: above_vah, inside_value, below_val. Copy one literal verbatim from this list. Do not invent near-synonyms such as above.
+- value_context.relative_to_vwap must use only these exact literals: above, at, below.
+- value_context.relative_to_prior_day_range must use only these exact literals: above, inside, below.
+- outcome must be Stage B outcome only: ANALYSIS_COMPLETE or NO_TRADE. Never emit READY in Stage B.
+- key_levels must be the schema object with support_levels, resistance_levels, and pivot_level. Do not emit key_levels as a list of objects.
+- structural_notes must be a single string. Do not emit structural_notes as a list.
+- assumptions must be an array of strings. Use [] when there are no assumptions. Do not emit assumptions as a scalar string, sentence, or paragraph.
+- Do not leak Stage A fields into Stage B output. Never emit status, missing_inputs, disqualifiers, data_quality_flags, staleness_check, challenge_state_valid, or event_lockout_detail in contract_analysis.
 - Reference specific numeric levels from structured fields, not vague impressions.
 - If signals conflict, list them explicitly in conflicting_signals.
 - If conflicting_signals contains >= 2 entries, evidence_score must not exceed 6.
@@ -162,6 +175,7 @@ Stage B shared requirements:
 - Every claim in structural_notes must reference at least one specific field from market_packet or contract_specific_extension.
 - Ensure confidence_band matches evidence_score exactly.
 - If the picture is genuinely unclear, directional_bias = "unclear" is valid.
+- Prefer exact literal copying from the allowed values lists above rather than paraphrasing or normalizing into your own wording. When a field has an allowed-values list, copy one allowed literal exactly and emit assumptions as a JSON array even if it contains only one string.
 
 Part 2 output: contract_analysis JSON only.
 """
