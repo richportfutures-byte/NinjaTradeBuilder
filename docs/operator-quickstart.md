@@ -45,7 +45,8 @@ Treat the workflow as two separate phases:
 2. runtime execution against the frozen packet
 
 The current compiler slice supports `ES` only. It is deterministic for historical sessions, but it
-still depends on a manual overlay for the fields that are not yet derived from raw historical bars.
+still depends on a manual overlay for the fields that are not yet safe to derive from raw
+historical bars.
 
 ## Phase 1: compile one ES historical packet
 
@@ -58,7 +59,7 @@ mkdir -p ./build
 env PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m ninjatradebuilder.packet_compiler.cli \
   --contract ES \
   --historical-input tests/fixtures/compiler/es_historical_input.valid.json \
-  --overlay tests/fixtures/compiler/es_overlay.valid.json \
+  --overlay tests/fixtures/compiler/es_overlay.assisted.valid.json \
   --output ./build/es.packet.json
 ```
 
@@ -75,6 +76,11 @@ The compiler currently derives and records provenance for:
 - session range
 - initial balance high / low / range
 - weekly open
+- a conservative overlay-assist subset:
+  - `attached_visuals` defaults to all false when omitted
+  - `major_higher_timeframe_levels`, `key_hvns`, `key_lvns`,
+    `singles_excess_poor_high_low_notes`, and `cross_market_context` default to `null`
+  - `data_quality_flags` defaults to `[]`
 
 `initial balance` and `weekly open` are recorded in the provenance sidecar because the frozen
 runtime packet schema does not have dedicated top-level fields for them.
@@ -90,6 +96,23 @@ Compiler-side integrity checks are strict and fail closed:
 - initial balance is derived from all `current_rth_bars` with
   `first_timestamp <= timestamp < first_timestamp + 60 minutes`, and the compiler requires at
   least two bars spanning at least 30 minutes inside that window
+
+Still-manual ES overlay fields are:
+
+- `challenge_state`
+- `current_session_vah`, `current_session_val`, `current_session_poc`
+- `previous_session_vah`, `previous_session_val`, `previous_session_poc`
+- `avg_20d_session_range`
+- `cumulative_delta`
+- `current_volume_vs_average`
+- `opening_type`
+- `event_calendar_remainder`
+- `breadth`
+- `index_cash_tone`
+
+They remain manual because they require external calendars, profile calculations, order-flow data,
+cross-market context, or doctrine-sensitive interpretation that is not safely derivable from the
+current historical bar inputs alone.
 
 ## Phase 1a: inspect the provenance artifact
 

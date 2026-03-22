@@ -43,7 +43,7 @@ def main() -> int:
     os.environ.setdefault("GEMINI_API_KEY", "ci-placeholder")
 
     historical_input = Path("tests/fixtures/compiler/es_historical_input.valid.json")
-    overlay_input = Path("tests/fixtures/compiler/es_overlay.valid.json")
+    overlay_input = Path("tests/fixtures/compiler/es_overlay.assisted.valid.json")
     if not historical_input.is_file() or not overlay_input.is_file():
         print("Compiler smoke runner could not find ES compiler fixtures", file=sys.stderr)
         return 2

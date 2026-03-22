@@ -74,6 +74,37 @@ def test_compile_es_packet_derives_expected_features_and_validates() -> None:
     assert artifact.provenance["derived_features"]["weekly_open"]["value"] == 4998.0
 
 
+def test_compile_es_packet_overlay_assist_derives_safe_defaults() -> None:
+    artifact = compile_es_packet(
+        _load_json("es_historical_input.valid.json"),
+        _load_json("es_overlay.assisted.valid.json"),
+        compiled_at_iso="2026-01-14T16:05:00Z",
+    )
+
+    packet = artifact.packet
+    assert packet.attached_visuals.daily_chart_attached is False
+    assert packet.attached_visuals.tpo_chart_attached is False
+    assert packet.market_packet.major_higher_timeframe_levels is None
+    assert packet.market_packet.key_hvns is None
+    assert packet.market_packet.key_lvns is None
+    assert packet.market_packet.singles_excess_poor_high_low_notes is None
+    assert packet.market_packet.cross_market_context is None
+    assert packet.market_packet.data_quality_flags == []
+    assert artifact.provenance["field_provenance"]["attached_visuals"]["source"] == "overlay_assist"
+    assert (
+        artifact.provenance["field_provenance"]["market_packet.data_quality_flags"]["source"]
+        == "overlay_assist"
+    )
+
+
+def test_compile_es_packet_fails_closed_when_required_manual_field_is_missing() -> None:
+    overlay = _load_json("es_overlay.assisted.valid.json")
+    overlay.pop("event_calendar_remainder")
+
+    with pytest.raises(ValueError, match="event_calendar_remainder"):
+        compile_es_packet(_load_json("es_historical_input.valid.json"), overlay)
+
+
 def test_compile_es_packet_rejects_unsorted_current_rth_bars() -> None:
     historical_input = _load_json("es_historical_input.valid.json")
     historical_input["current_rth_bars"] = list(reversed(historical_input["current_rth_bars"]))
@@ -139,7 +170,7 @@ def test_compiler_cli_writes_packet_and_provenance(tmp_path: Path) -> None:
             "--historical-input",
             str(FIXTURES_DIR / "es_historical_input.valid.json"),
             "--overlay",
-            str(FIXTURES_DIR / "es_overlay.valid.json"),
+            str(FIXTURES_DIR / "es_overlay.assisted.valid.json"),
             "--output",
             str(output_path),
         ],
@@ -164,7 +195,7 @@ def test_compiled_packet_runs_through_existing_cli(monkeypatch, tmp_path: Path) 
             "--historical-input",
             str(FIXTURES_DIR / "es_historical_input.valid.json"),
             "--overlay",
-            str(FIXTURES_DIR / "es_overlay.valid.json"),
+            str(FIXTURES_DIR / "es_overlay.assisted.valid.json"),
             "--output",
             str(output_path),
         ]

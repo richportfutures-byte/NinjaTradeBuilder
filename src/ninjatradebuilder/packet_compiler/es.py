@@ -100,10 +100,29 @@ def _initial_balance_bars(bars: list[HistoricalBar]) -> list[HistoricalBar]:
     return ib_bars
 
 
-def _build_field_provenance() -> dict[str, dict[str, str]]:
+def _overlay_provenance(
+    overlay: ESManualOverlayInput,
+    field_name: str,
+    *,
+    default_source: str = "manual_overlay",
+    assist_derivation: str | None = None,
+) -> dict[str, str]:
+    if field_name in overlay.model_fields_set:
+        return {"source": default_source, "field": field_name}
+    provenance = {"source": "overlay_assist", "field": field_name}
+    if assist_derivation is not None:
+        provenance["derivation"] = assist_derivation
+    return provenance
+
+
+def _build_field_provenance(overlay: ESManualOverlayInput) -> dict[str, dict[str, str]]:
     return {
         "challenge_state": {"source": "manual_overlay", "field": "challenge_state"},
-        "attached_visuals": {"source": "manual_overlay", "field": "attached_visuals"},
+        "attached_visuals": _overlay_provenance(
+            overlay,
+            "attached_visuals",
+            assist_derivation="default all visuals to false when omitted",
+        ),
         "contract_metadata": {
             "source": "compiler_constant",
             "field": "ES_CANONICAL_CONTRACT_METADATA",
@@ -150,30 +169,12 @@ def _build_field_provenance() -> dict[str, dict[str, str]]:
             "field": "overnight_bars",
             "derivation": "min(low)",
         },
-        "market_packet.current_session_vah": {
-            "source": "manual_overlay",
-            "field": "current_session_vah",
-        },
-        "market_packet.current_session_val": {
-            "source": "manual_overlay",
-            "field": "current_session_val",
-        },
-        "market_packet.current_session_poc": {
-            "source": "manual_overlay",
-            "field": "current_session_poc",
-        },
-        "market_packet.previous_session_vah": {
-            "source": "manual_overlay",
-            "field": "previous_session_vah",
-        },
-        "market_packet.previous_session_val": {
-            "source": "manual_overlay",
-            "field": "previous_session_val",
-        },
-        "market_packet.previous_session_poc": {
-            "source": "manual_overlay",
-            "field": "previous_session_poc",
-        },
+        "market_packet.current_session_vah": _overlay_provenance(overlay, "current_session_vah"),
+        "market_packet.current_session_val": _overlay_provenance(overlay, "current_session_val"),
+        "market_packet.current_session_poc": _overlay_provenance(overlay, "current_session_poc"),
+        "market_packet.previous_session_vah": _overlay_provenance(overlay, "previous_session_vah"),
+        "market_packet.previous_session_val": _overlay_provenance(overlay, "previous_session_val"),
+        "market_packet.previous_session_poc": _overlay_provenance(overlay, "previous_session_poc"),
         "market_packet.vwap": {
             "source": "historical_bars",
             "field": "current_rth_bars",
@@ -184,50 +185,52 @@ def _build_field_provenance() -> dict[str, dict[str, str]]:
             "field": "current_rth_bars",
             "derivation": "max(high)-min(low)",
         },
-        "market_packet.avg_20d_session_range": {
-            "source": "manual_overlay",
-            "field": "avg_20d_session_range",
-        },
-        "market_packet.cumulative_delta": {
-            "source": "manual_overlay",
-            "field": "cumulative_delta",
-        },
-        "market_packet.current_volume_vs_average": {
-            "source": "manual_overlay",
-            "field": "current_volume_vs_average",
-        },
-        "market_packet.opening_type": {
-            "source": "manual_overlay",
-            "field": "opening_type",
-        },
-        "market_packet.major_higher_timeframe_levels": {
-            "source": "manual_overlay",
-            "field": "major_higher_timeframe_levels",
-        },
-        "market_packet.key_hvns": {"source": "manual_overlay", "field": "key_hvns"},
-        "market_packet.key_lvns": {"source": "manual_overlay", "field": "key_lvns"},
-        "market_packet.singles_excess_poor_high_low_notes": {
-            "source": "manual_overlay",
-            "field": "singles_excess_poor_high_low_notes",
-        },
-        "market_packet.event_calendar_remainder": {
-            "source": "manual_overlay",
-            "field": "event_calendar_remainder",
-        },
-        "market_packet.cross_market_context": {
-            "source": "manual_overlay",
-            "field": "cross_market_context",
-        },
-        "market_packet.data_quality_flags": {
-            "source": "manual_overlay",
-            "field": "data_quality_flags",
-        },
+        "market_packet.avg_20d_session_range": _overlay_provenance(
+            overlay, "avg_20d_session_range"
+        ),
+        "market_packet.cumulative_delta": _overlay_provenance(overlay, "cumulative_delta"),
+        "market_packet.current_volume_vs_average": _overlay_provenance(
+            overlay, "current_volume_vs_average"
+        ),
+        "market_packet.opening_type": _overlay_provenance(overlay, "opening_type"),
+        "market_packet.major_higher_timeframe_levels": _overlay_provenance(
+            overlay,
+            "major_higher_timeframe_levels",
+            assist_derivation="default to null when omitted",
+        ),
+        "market_packet.key_hvns": _overlay_provenance(
+            overlay,
+            "key_hvns",
+            assist_derivation="default to null when omitted",
+        ),
+        "market_packet.key_lvns": _overlay_provenance(
+            overlay,
+            "key_lvns",
+            assist_derivation="default to null when omitted",
+        ),
+        "market_packet.singles_excess_poor_high_low_notes": _overlay_provenance(
+            overlay,
+            "singles_excess_poor_high_low_notes",
+            assist_derivation="default to null when omitted",
+        ),
+        "market_packet.event_calendar_remainder": _overlay_provenance(
+            overlay, "event_calendar_remainder"
+        ),
+        "market_packet.cross_market_context": _overlay_provenance(
+            overlay,
+            "cross_market_context",
+            assist_derivation="default to null when omitted",
+        ),
+        "market_packet.data_quality_flags": _overlay_provenance(
+            overlay,
+            "data_quality_flags",
+            assist_derivation="default to [] when omitted",
+        ),
         "contract_specific_extension.contract": {"source": "compiler_constant", "field": "ES"},
-        "contract_specific_extension.breadth": {"source": "manual_overlay", "field": "breadth"},
-        "contract_specific_extension.index_cash_tone": {
-            "source": "manual_overlay",
-            "field": "index_cash_tone",
-        },
+        "contract_specific_extension.breadth": _overlay_provenance(overlay, "breadth"),
+        "contract_specific_extension.index_cash_tone": _overlay_provenance(
+            overlay, "index_cash_tone"
+        ),
     }
 
 
@@ -294,7 +297,7 @@ def compile_es_packet(
         "contract": "ES",
         "compiled_at": compiled_at_iso or _utc_now_iso(),
         "packet_schema": "historical_packet_v1",
-        "field_provenance": _build_field_provenance(),
+        "field_provenance": _build_field_provenance(manual_overlay),
         "derived_features": {
             "ib_high": {
                 "value": _max_high(ib_bars),

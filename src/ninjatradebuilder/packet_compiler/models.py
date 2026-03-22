@@ -96,7 +96,7 @@ class ESHistoricalDataInput(CompilerStrictModel):
 class ESManualOverlayInput(CompilerStrictModel):
     contract: Literal["ES"] = "ES"
     challenge_state: ChallengeState
-    attached_visuals: AttachedVisuals
+    attached_visuals: AttachedVisuals = Field(default_factory=AttachedVisuals)
     current_session_vah: float
     current_session_val: float
     current_session_poc: float
@@ -112,7 +112,7 @@ class ESManualOverlayInput(CompilerStrictModel):
     key_lvns: list[float] | None = Field(default=None, max_length=3)
     singles_excess_poor_high_low_notes: str | None = None
     event_calendar_remainder: list[EventCalendarEntry]
-    cross_market_context: dict[str, Any] | None
-    data_quality_flags: list[str] | None
+    cross_market_context: dict[str, Any] | None = None
+    data_quality_flags: list[str] = Field(default_factory=list)
     breadth: str
     index_cash_tone: IndexCashTone
