@@ -134,6 +134,10 @@ def test_stage_d_prompt_contains_check_10_correction_and_completeness_anchor() -
 
     assert "last_trade_direction_by_contract" in rendered
     assert "checks_count must equal 13" in rendered
+    assert "decision is the required top-level decision field" in rendered
+    assert "Do not emit outcome in Stage D." in rendered
+    assert "check_id is required for every check and must run from 1 through 13 in order" in rendered
+    assert "Do not emit singular rejection_reason." in rendered
 
 
 def test_get_prompt_asset_returns_expected_prompt() -> None:

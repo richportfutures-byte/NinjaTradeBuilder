@@ -128,6 +128,24 @@ class GeminiResponsesAdapter:
                 "data_quality_flags, staleness_check, challenge_state_valid, or "
                 "event_lockout_detail into contract_analysis."
             )
+        if request.prompt_id == 9:
+            description += (
+                " For risk_authorization responses, always emit the full schema object with "
+                "contract, timestamp, decision, checks_count, checks, rejection_reasons, "
+                "adjusted_position_size, adjusted_risk_dollars, remaining_daily_risk_budget, "
+                "and remaining_aggregate_risk_budget. decision must be exactly APPROVED, "
+                "REJECTED, or REDUCED, and must never be emitted as outcome. checks_count "
+                "must equal 13. checks must contain exactly 13 objects in order, each with "
+                "check_id, check_name, passed, and detail; check_id must run from 1 through "
+                "13 in order. Use rejection_reasons as a list of strings; do not emit "
+                "rejection_reason. Do not leak setup fields into risk_authorization, including "
+                "direction, position_size, entry_price, stop_price, target_1, target_2, "
+                "reward_risk_ratio, or authorized_risk_dollars. For APPROVED, use "
+                "rejection_reasons as [] and leave adjusted_position_size and "
+                "adjusted_risk_dollars null. For REJECTED, include one or more "
+                "rejection_reasons. For REDUCED, include adjusted_position_size and "
+                "adjusted_risk_dollars."
+            )
         return description
 
     def _extract_envelope(self, response: Any) -> Mapping[str, Any]:

@@ -232,6 +232,54 @@ def _minimal_valid_proposed_setup(contract: str) -> dict[str, Any]:
     }
 
 
+def _valid_risk_authorization(contract: str, decision: str = "APPROVED") -> dict[str, Any]:
+    payload = {
+        "$schema": "risk_authorization_v1",
+        "stage": "risk_authorization",
+        "contract": contract,
+        "timestamp": "2026-01-14T14:08:00Z",
+        "decision": decision,
+        "checks_count": 13,
+        "checks": [
+            {
+                "check_id": check_id,
+                "check_name": f"Check {check_id}",
+                "passed": decision == "APPROVED",
+                "detail": f"Rule {check_id} {'passed' if decision == 'APPROVED' else 'failed'}.",
+            }
+            for check_id in range(1, 14)
+        ],
+        "rejection_reasons": [],
+        "adjusted_position_size": None,
+        "adjusted_risk_dollars": None,
+        "remaining_daily_risk_budget": 650.0,
+        "remaining_aggregate_risk_budget": 400.0,
+    }
+    if decision == "REJECTED":
+        payload["rejection_reasons"] = ["event_lockout_active"]
+    return payload
+
+
+def _stage_d_inputs(contract: str) -> dict[str, Any]:
+    return {
+        "master_doctrine_text": "MASTER DOCTRINE",
+        "evaluation_timestamp_iso": "2026-01-14T14:07:00Z",
+        "challenge_state_json": {
+            "last_trade_direction_by_contract": {
+                "ES": None,
+                "NQ": None,
+                "CL": None,
+                "ZN": None,
+                "6E": None,
+                "MGC": None,
+            }
+        },
+        "contract_metadata_json": {"contract": contract},
+        "proposed_setup_json": {"contract": contract, "outcome": "SETUP_PROPOSED"},
+        "event_calendar_remainder_json": [],
+    }
+
+
 def _envelope(boundary: str, payload: dict[str, Any]) -> FakeGeminiResponse:
     return FakeGeminiResponse(text=json.dumps({"boundary": boundary, "payload": payload}))
 
@@ -354,6 +402,28 @@ def test_prompt_8_schema_hint_hardens_no_trade_shape() -> None:
     assert "sizing_math to be a structured object rather than prose" in payload_description
     assert "set no_trade_reason to null" in payload_description
     assert "target_2 null when position_size is 1" in payload_description
+
+
+def test_prompt_9_schema_hint_hardens_risk_authorization_shape() -> None:
+    client = FakeGeminiClient(_envelope("risk_authorization", _valid_risk_authorization("ES")))
+    adapter = GeminiResponsesAdapter(client=client, model="gemini-3.1-pro-preview")
+    request = StructuredGenerationRequest(
+        prompt_id=9,
+        rendered_prompt="rendered stage d prompt",
+        expected_output_boundaries=("risk_authorization",),
+        schema_model_names=("RiskAuthorization",),
+    )
+
+    adapter.generate_structured(request)
+
+    payload_description = client.models.calls[0]["config"]["response_json_schema"]["properties"][
+        "payload"
+    ]["description"]
+    assert "decision must be exactly APPROVED, REJECTED, or REDUCED" in payload_description
+    assert "must never be emitted as outcome" in payload_description
+    assert "check_id must run from 1 through 13 in order" in payload_description
+    assert "do not emit rejection_reason" in payload_description
+    assert "Do not leak setup fields into risk_authorization" in payload_description
 
 
 def test_malformed_provider_output_is_rejected() -> None:
@@ -560,6 +630,47 @@ def test_no_caller_override_can_replace_prompt_bound_validation() -> None:
         )
 
     assert "not allowed for prompt 8" in str(exc_info.value)
+
+
+def test_live_like_stage_d_near_schema_payload_is_rejected() -> None:
+    invalid_payload = {
+        "$schema": "risk_authorization_v1",
+        "stage": "risk_authorization",
+        "contract": "ES",
+        "timestamp": "2026-01-14T15:07:00Z",
+        "outcome": "APPROVED",
+        "checks_count": 13,
+        "checks": [
+            {
+                "check_name": f"Check {check_id}",
+                "passed": True,
+                "detail": f"Rule {check_id} passed.",
+            }
+            for check_id in range(1, 14)
+        ],
+        "direction": "LONG",
+        "position_size": 2,
+        "authorized_risk_dollars": 112.5,
+        "rejection_reason": None,
+        "remaining_daily_risk_budget": 650.0,
+        "remaining_aggregate_risk_budget": 400.0,
+    }
+    client = FakeGeminiClient(_envelope("risk_authorization", invalid_payload))
+    adapter = GeminiResponsesAdapter(client=client, model="gemini-3.1-pro-preview")
+
+    with pytest.raises(ValueError) as exc_info:
+        execute_prompt(
+            prompt_id=9,
+            runtime_inputs=_stage_d_inputs("ES"),
+            model_adapter=adapter,
+        )
+
+    message = str(exc_info.value)
+    assert "decision" in message
+    assert "check_id" in message
+    assert "direction" in message
+    assert "authorized_risk_dollars" in message
+    assert "rejection_reason" in message
 
 
 def test_end_to_end_execution_through_gemini_adapter_boundary() -> None:

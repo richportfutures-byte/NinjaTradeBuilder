@@ -463,6 +463,14 @@ DECISION RULES:
 - REDUCED only when size or aggregate-risk issues can be corrected by reducing size.
 - If REDUCED, recalculate the resulting risk and ensure reward-to-risk still satisfies Stage C rules.
 - Include all 13 checks with pass/fail and detail. checks_count must equal 13.
+- decision is the required top-level decision field and must be exactly one of: APPROVED, REJECTED, REDUCED. Do not emit outcome in Stage D.
+- Each checks entry must be a risk_authorization.checks object with exactly: check_id, check_name, passed, detail.
+- check_id is required for every check and must run from 1 through 13 in order with no gaps.
+- Use rejection_reasons as a list of strings. Do not emit singular rejection_reason.
+- Do not leak setup fields into Stage D output. Never emit direction, position_size, entry_price, stop_price, target_1, target_2, reward_risk_ratio, authorized_risk_dollars, or other proposed_setup fields in risk_authorization.
+- For APPROVED, use rejection_reasons = [] and leave adjusted_position_size and adjusted_risk_dollars as null.
+- For REJECTED, include one or more rejection_reasons explaining the hard reject.
+- For REDUCED, include adjusted_position_size and adjusted_risk_dollars and still include all 13 checks.
 
 OUTPUT: risk_authorization JSON only.
 Expected output boundary: risk_authorization
