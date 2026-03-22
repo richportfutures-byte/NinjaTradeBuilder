@@ -5,3 +5,16 @@ __pycache__/
 
 *.egg-info/
 src/ninjatradebuilder.egg-info/
+
+.env
+.env.*
+logs/
+build/
+dist/
+*.jsonl
+*.packet.json
+*.provenance.json
+*.pem
+*.key
+*.p12
+*.crt
