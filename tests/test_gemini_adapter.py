@@ -324,6 +324,7 @@ def test_prompt_2_schema_hint_hardens_sufficiency_gate_shape() -> None:
     assert "value_context.relative_to_prior_value_area must use only above, inside, or below" in payload_description
     assert "value_context.relative_to_current_developing_value must use only above_vah, inside_value, or below_val" in payload_description
     assert "key_levels must be an object" in payload_description
+    assert "at most 3 numeric levels" in payload_description
     assert "structural_notes must be a single string" in payload_description
     assert "assumptions must be a JSON array of strings" in payload_description
     assert "Do not leak Stage A fields such as status" in payload_description

@@ -164,7 +164,7 @@ Stage B shared requirements:
 - value_context.relative_to_vwap must use only these exact literals: above, at, below.
 - value_context.relative_to_prior_day_range must use only these exact literals: above, inside, below.
 - outcome must be Stage B outcome only: ANALYSIS_COMPLETE or NO_TRADE. Never emit READY in Stage B.
-- key_levels must be the schema object with support_levels, resistance_levels, and pivot_level. Do not emit key_levels as a list of objects.
+- key_levels must be the schema object with support_levels, resistance_levels, and pivot_level. Do not emit key_levels as a list of objects. support_levels and resistance_levels must each contain at most 3 numeric levels, chosen as the most relevant levels only.
 - structural_notes must be a single string. Do not emit structural_notes as a list.
 - assumptions must be an array of strings. Use [] when there are no assumptions. Do not emit assumptions as a scalar string, sentence, or paragraph.
 - Do not leak Stage A fields into Stage B output. Never emit status, missing_inputs, disqualifiers, data_quality_flags, staleness_check, challenge_state_valid, or event_lockout_detail in contract_analysis.
@@ -255,7 +255,7 @@ PROMPT_3_NQ = _build_contract_prompt(
 4. Opening type as in ES.
 5. Delta and volume, with extra caution in thinner NQ volume.
 6. Cross-market context: bond yields and DXY matter more than in ES.
-7. Key levels from structured data only.
+7. Key levels from structured data only, with at most 3 support levels and at most 3 resistance levels.
 8. If megacap_leadership_table shows a company with earnings due today or after close, add data_quality_flag "megacap_earnings_risk" and treat hold-time conservatively.""",
     warnings="""- NQ moves faster than ES, so weak structure should default toward NO_TRADE.
 - Single-name leadership can make the index fragile.

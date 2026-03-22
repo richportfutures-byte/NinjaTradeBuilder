@@ -503,6 +503,29 @@ def test_accepts_stage_b_exact_valid_literals_on_es_case() -> None:
     assert result.validated_output.assumptions == []
 
 
+def test_rejects_prompt_3_nq_stage_b_with_too_many_support_levels() -> None:
+    invalid_output = _valid_contract_analysis("NQ")
+    invalid_output["key_levels"]["support_levels"] = [18334.0, 18320.0, 18302.0, 18290.0]
+    adapter = FakeStructuredAdapter(invalid_output)
+
+    with pytest.raises(ValueError) as exc_info:
+        execute_prompt(
+            prompt_id=3,
+            runtime_inputs={
+                **_stage_ab_inputs("NQ"),
+                "contract_specific_extension_json": {
+                    "contract": "NQ",
+                    "relative_strength_vs_es": 1.35,
+                    "megacap_leadership_table": {"NVDA": "leading_higher"},
+                },
+            },
+            model_adapter=adapter,
+        )
+
+    assert "support_levels" in str(exc_info.value)
+    assert "at most 3 items" in str(exc_info.value)
+
+
 def test_stage_ab_rendered_prompt_requires_full_sufficiency_gate_output_shape() -> None:
     adapter = FakeStructuredAdapter(_valid_sufficiency_gate_output("ES"))
 
