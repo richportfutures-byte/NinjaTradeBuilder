@@ -55,6 +55,21 @@ env PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m ninjatradebuilder.cli \
 - `--audit-log` is optional. When supplied, the CLI appends one JSON record per run.
 - Gemini requests are bounded by the centralized timeout and retry env vars above.
 
+Aggregate local audit logs with:
+
+```bash
+env PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m ninjatradebuilder.audit_report \
+  --audit-log ./logs/ninjatradebuilder.audit.jsonl
+```
+
+The report prints concise counts for:
+
+- success vs failure
+- termination_stage
+- final_decision
+- error_category
+- requested_contract
+
 Equivalent Python API form:
 
 ```python
@@ -101,9 +116,10 @@ print(result.final_decision)
 - clear startup failure when `GEMINI_API_KEY` is missing
 - bounded Gemini request policy with explicit timeout/retry behavior
 - optional local JSONL audit record for operator debugging
+- thin local aggregate audit report for recurring-run visibility
 
 ## What this path does not provide yet
 
 - persistent audit sink beyond local JSONL operator logs
-- structured observability
+- broader structured observability beyond local file-based aggregation
 - deployment-specific handler for Netlify or other serverless targets
