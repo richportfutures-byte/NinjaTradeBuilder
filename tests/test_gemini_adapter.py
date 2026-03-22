@@ -402,6 +402,27 @@ def test_prompt_7_schema_hint_hardens_mgc_contradiction_fail_closed_rule() -> No
     assert "directional_bias must use only the schema literals bullish, bearish, neutral, or unclear" in payload_description
 
 
+def test_prompt_3_schema_hint_hardens_nq_relative_strength_fail_closed_rule() -> None:
+    client = FakeGeminiClient(_envelope("contract_analysis", _valid_contract_analysis("NQ")))
+    adapter = GeminiResponsesAdapter(client=client, model="gemini-3.1-pro-preview")
+    request = StructuredGenerationRequest(
+        prompt_id=3,
+        rendered_prompt="rendered nq prompt",
+        expected_output_boundaries=("sufficiency_gate_output", "contract_analysis"),
+        schema_model_names=("SufficiencyGateOutput", "ContractAnalysis"),
+    )
+
+    adapter.generate_structured(request)
+
+    payload_description = client.models.calls[0]["config"]["response_json_schema"]["properties"][
+        "payload"
+    ]["description"]
+    assert "relative_strength_vs_es is below 1.0" in payload_description
+    assert "megacap leadership is fragile, lagging, or earnings-risk driven" in payload_description
+    assert "favor outcome NO_TRADE rather than ANALYSIS_COMPLETE" in payload_description
+    assert "broad leadership and one coherent dominant driver are clearly established" in payload_description
+
+
 def test_prompt_8_schema_hint_hardens_no_trade_shape() -> None:
     client = FakeGeminiClient(_envelope("proposed_setup", _valid_proposed_setup("ES")))
     adapter = GeminiResponsesAdapter(client=client, model="gemini-3.1-pro-preview")

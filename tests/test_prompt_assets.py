@@ -105,6 +105,8 @@ def test_contract_specific_prompt_corrections_are_present() -> None:
     mgc = render_prompt(7, _stage_ab_inputs())
 
     assert 'data_quality_flag "megacap_earnings_risk"' in nq
+    assert 'If relative_strength_vs_es < 1.0 and megacap leadership is fragile, lagging, or earnings-risk driven, favor outcome = NO_TRADE' in nq
+    assert "Do not return ANALYSIS_COMPLETE when relative_strength_vs_es shows NQ lagging ES" in nq
     assert 'eia_timing.status = "released" and minutes_since < 15' in cl
     assert "evidence_score must not exceed 7" in cl
     assert "auction_proximity_risk" in zn

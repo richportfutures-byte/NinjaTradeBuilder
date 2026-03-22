@@ -257,7 +257,9 @@ PROMPT_3_NQ = _build_contract_prompt(
 5. Delta and volume, with extra caution in thinner NQ volume.
 6. Cross-market context: bond yields and DXY matter more than in ES.
 7. Key levels from structured data only, with at most 3 support levels and at most 3 resistance levels.
-8. If megacap_leadership_table shows a company with earnings due today or after close, add data_quality_flag "megacap_earnings_risk" and treat hold-time conservatively.""",
+8. If megacap_leadership_table shows a company with earnings due today or after close, add data_quality_flag "megacap_earnings_risk" and treat hold-time conservatively.
+9. If relative_strength_vs_es < 1.0 and megacap leadership is fragile, lagging, or earnings-risk driven, favor outcome = NO_TRADE unless broad leadership and one coherent dominant driver are clearly established from structured inputs.
+10. Do not return ANALYSIS_COMPLETE when relative_strength_vs_es shows NQ lagging ES and the megacap picture is unresolved, single-name fragile, or distorted by earnings risk.""",
     warnings="""- NQ moves faster than ES, so weak structure should default toward NO_TRADE.
 - Single-name leadership can make the index fragile.
 - Rapid relative-strength regime shifts should be treated as a caution flag, not an invitation to force a trade.""",

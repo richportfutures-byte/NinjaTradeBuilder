@@ -141,6 +141,13 @@ class GeminiResponsesAdapter:
                 "directional_bias must use only the schema literals bullish, bearish, neutral, "
                 "or unclear; never emit up, down, long, short, or any synonym."
             )
+        if request.prompt_id == 3:
+            description += (
+                " For Prompt 3 NQ specifically, if relative_strength_vs_es is below 1.0 and "
+                "megacap leadership is fragile, lagging, or earnings-risk driven, favor outcome "
+                "NO_TRADE rather than ANALYSIS_COMPLETE unless broad leadership and one coherent "
+                "dominant driver are clearly established from structured inputs."
+            )
         if request.prompt_id == 9:
             description += (
                 " For risk_authorization responses, always emit the full schema object with "
