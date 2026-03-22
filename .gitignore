@@ -18,3 +18,5 @@ dist/
 *.key
 *.p12
 *.crt
+
+.DS_Store
