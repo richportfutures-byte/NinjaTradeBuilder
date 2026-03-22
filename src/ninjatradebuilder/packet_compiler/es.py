@@ -24,6 +24,8 @@ ES_CANONICAL_CONTRACT_METADATA = ESContractMetadata.model_validate(
         "allowed_hours_end_et": "15:45",
     }
 )
+INITIAL_BALANCE_WINDOW_MINUTES = 60
+MIN_INITIAL_BALANCE_OBSERVED_SPAN_MINUTES = 30
 
 
 @dataclass(frozen=True)
@@ -81,10 +83,20 @@ def _vwap(bars: list[HistoricalBar]) -> float:
 
 
 def _initial_balance_bars(bars: list[HistoricalBar]) -> list[HistoricalBar]:
-    window_end = bars[0].timestamp + timedelta(hours=1)
-    ib_bars = [bar for bar in bars if bar.timestamp < window_end]
-    if not ib_bars:
-        raise ValueError("Current RTH bars must contain at least one bar inside the initial balance.")
+    window_start = bars[0].timestamp
+    window_end = window_start + timedelta(minutes=INITIAL_BALANCE_WINDOW_MINUTES)
+    ib_bars = [bar for bar in bars if window_start <= bar.timestamp < window_end]
+    if len(ib_bars) < 2:
+        raise ValueError(
+            "Current RTH bars must contain at least two bars inside the first 60 minutes "
+            "to derive initial balance."
+        )
+    observed_span = ib_bars[-1].timestamp - ib_bars[0].timestamp
+    if observed_span < timedelta(minutes=MIN_INITIAL_BALANCE_OBSERVED_SPAN_MINUTES):
+        raise ValueError(
+            "Current RTH bars must span at least 30 minutes inside the first 60 minutes "
+            "to derive initial balance."
+        )
     return ib_bars
 
 
@@ -288,19 +300,25 @@ def compile_es_packet(
                 "value": _max_high(ib_bars),
                 "source": "historical_bars",
                 "field": "current_rth_bars",
-                "derivation": "max(high) over first 60 minutes",
+                "derivation": (
+                    "max(high) across current_rth_bars where "
+                    "first_timestamp <= timestamp < first_timestamp + 60 minutes"
+                ),
             },
             "ib_low": {
                 "value": _min_low(ib_bars),
                 "source": "historical_bars",
                 "field": "current_rth_bars",
-                "derivation": "min(low) over first 60 minutes",
+                "derivation": (
+                    "min(low) across current_rth_bars where "
+                    "first_timestamp <= timestamp < first_timestamp + 60 minutes"
+                ),
             },
             "ib_range": {
                 "value": _session_range(ib_bars),
                 "source": "historical_bars",
                 "field": "current_rth_bars",
-                "derivation": "ib_high-ib_low over first 60 minutes",
+                "derivation": "ib_high-ib_low from the first 60 minutes window",
             },
             "weekly_open": {
                 "value": historical.weekly_open_bar.open,

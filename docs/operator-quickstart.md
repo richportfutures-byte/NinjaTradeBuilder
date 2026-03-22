@@ -37,14 +37,24 @@ python3 -m venv .venv
 
 Use `gemini-3.1-pro-preview` for the current validated branch baseline.
 
-## Compile one ES historical packet
+## Operator path overview
 
-The compiler is an upstream step. It builds one frozen `historical_packet_v1` JSON file plus a
-provenance sidecar. The current v1 compiler supports `ES` only.
+Treat the workflow as two separate phases:
 
-Example:
+1. upstream packet compilation
+2. runtime execution against the frozen packet
+
+The current compiler slice supports `ES` only. It is deterministic for historical sessions, but it
+still depends on a manual overlay for the fields that are not yet derived from raw historical bars.
+
+## Phase 1: compile one ES historical packet
+
+The compiler builds one frozen `historical_packet_v1` JSON file plus a provenance sidecar.
+
+Copy-paste-safe compile command:
 
 ```bash
+mkdir -p ./build
 env PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m ninjatradebuilder.packet_compiler.cli \
   --contract ES \
   --historical-input tests/fixtures/compiler/es_historical_input.valid.json \
@@ -69,12 +79,42 @@ The compiler currently derives and records provenance for:
 `initial balance` and `weekly open` are recorded in the provenance sidecar because the frozen
 runtime packet schema does not have dedicated top-level fields for them.
 
-## Minimum smoke path
+Compiler-side integrity checks are strict and fail closed:
 
-Preferred CLI form:
+- `prior_rth_bars`, `overnight_bars`, and `current_rth_bars` must be non-empty, strictly
+  timestamp-ascending, and free of duplicate timestamps
+- `current_rth_bars` must all fall on one session date
+- `prior_rth_bars` must represent a prior date relative to the current session
+- `overnight_bars` must fall strictly between prior RTH and current RTH with no overlap
+- `weekly_open_bar` must not be later than the first current RTH bar
+- initial balance is derived from all `current_rth_bars` with
+  `first_timestamp <= timestamp < first_timestamp + 60 minutes`, and the compiler requires at
+  least two bars spanning at least 30 minutes inside that window
+
+## Phase 1a: inspect the provenance artifact
+
+Copy-paste-safe provenance inspection:
+
+```bash
+env PYTHONDONTWRITEBYTECODE=1 .venv/bin/python - <<'PY'
+import json
+from pathlib import Path
+
+provenance = json.loads(Path("./build/es.packet.provenance.json").read_text())
+print("compiler_schema:", provenance["compiler_schema"])
+print("contract:", provenance["contract"])
+print("derived_features:", sorted(provenance["derived_features"].keys()))
+print("current_price_source:", provenance["field_provenance"]["market_packet.current_price"])
+PY
+```
+
+## Phase 2: run the runtime CLI on the compiled packet
+
+Copy-paste-safe runtime command:
 
 ```bash
 export GEMINI_API_KEY=your_existing_key
+mkdir -p ./logs
 env PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m ninjatradebuilder.cli \
   --packet ./build/es.packet.json \
   --audit-log ./logs/ninjatradebuilder.audit.jsonl
@@ -152,6 +192,8 @@ print(result.final_decision)
 
 ## What this path does not provide yet
 
+- compiler support beyond `ES`
+- automatic population of all overlay fields from a real market-data provider
 - persistent audit sink beyond local JSONL operator logs
 - broader structured observability beyond local file-based aggregation
 - deployment-specific handler for Netlify or other serverless targets

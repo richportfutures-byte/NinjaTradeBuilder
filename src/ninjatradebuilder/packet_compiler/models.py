@@ -45,15 +45,51 @@ class ESHistoricalDataInput(CompilerStrictModel):
     current_rth_bars: list[HistoricalBar]
     weekly_open_bar: HistoricalBar
 
+    @staticmethod
+    def _validate_strictly_ascending(field_name: str, bars: list[HistoricalBar]) -> None:
+        if not bars:
+            raise ValueError(f"{field_name} must contain at least one bar.")
+        timestamps = [bar.timestamp for bar in bars]
+        if len(set(timestamps)) != len(timestamps):
+            raise ValueError(f"{field_name} must not contain duplicate timestamps.")
+        if any(current <= previous for previous, current in zip(timestamps, timestamps[1:])):
+            raise ValueError(f"{field_name} must be strictly timestamp-ascending.")
+
     @model_validator(mode="after")
     def validate_bar_sets(self) -> "ESHistoricalDataInput":
         for field_name in ("prior_rth_bars", "overnight_bars", "current_rth_bars"):
-            bars = getattr(self, field_name)
-            if not bars:
-                raise ValueError(f"{field_name} must contain at least one bar.")
-            timestamps = [bar.timestamp for bar in bars]
-            if timestamps != sorted(timestamps):
-                raise ValueError(f"{field_name} must be sorted by timestamp ascending.")
+            self._validate_strictly_ascending(field_name, getattr(self, field_name))
+
+        current_session_dates = {bar.timestamp.date() for bar in self.current_rth_bars}
+        if len(current_session_dates) != 1:
+            raise ValueError("current_rth_bars must all fall on one session date.")
+        current_session_date = next(iter(current_session_dates))
+
+        prior_session_dates = {bar.timestamp.date() for bar in self.prior_rth_bars}
+        if len(prior_session_dates) != 1:
+            raise ValueError("prior_rth_bars must all represent one prior session date.")
+        prior_session_date = next(iter(prior_session_dates))
+        if prior_session_date >= current_session_date:
+            raise ValueError("prior_rth_bars must represent a date before current_rth_bars.")
+
+        prior_session_end = self.prior_rth_bars[-1].timestamp
+        current_session_start = self.current_rth_bars[0].timestamp
+        if self.weekly_open_bar.timestamp > current_session_start:
+            raise ValueError("weekly_open_bar timestamp must not be after the first current_rth_bar.")
+        if prior_session_end >= current_session_start:
+            raise ValueError("prior_rth_bars must end before current_rth_bars begin.")
+        if self.overnight_bars[0].timestamp <= prior_session_end:
+            raise ValueError("overnight_bars must start after prior_rth_bars end.")
+        if self.overnight_bars[-1].timestamp >= current_session_start:
+            raise ValueError("overnight_bars must end before current_rth_bars begin.")
+        if any(bar.timestamp <= prior_session_end for bar in self.overnight_bars):
+            raise ValueError(
+                "overnight_bars must fall strictly after prior_rth_bars and before current_rth_bars."
+            )
+        if any(bar.timestamp >= current_session_start for bar in self.overnight_bars):
+            raise ValueError(
+                "overnight_bars must fall strictly after prior_rth_bars and before current_rth_bars."
+            )
         return self
 
 

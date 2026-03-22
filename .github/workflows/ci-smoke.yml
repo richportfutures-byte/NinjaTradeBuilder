@@ -31,3 +31,9 @@ jobs:
           GEMINI_API_KEY: ci-placeholder
           PYTHONDONTWRITEBYTECODE: "1"
         run: python tests/cli_smoke_runner.py
+
+      - name: Run deterministic ES compiler to runtime smoke path
+        env:
+          GEMINI_API_KEY: ci-placeholder
+          PYTHONDONTWRITEBYTECODE: "1"
+        run: python tests/compiler_runtime_smoke_runner.py

@@ -78,7 +78,54 @@ def test_compile_es_packet_rejects_unsorted_current_rth_bars() -> None:
     historical_input = _load_json("es_historical_input.valid.json")
     historical_input["current_rth_bars"] = list(reversed(historical_input["current_rth_bars"]))
 
-    with pytest.raises(ValueError, match="current_rth_bars must be sorted"):
+    with pytest.raises(ValueError, match="current_rth_bars must be strictly timestamp-ascending"):
+        compile_es_packet(historical_input, _load_json("es_overlay.valid.json"))
+
+
+def test_compile_es_packet_rejects_duplicate_timestamps_within_bar_set() -> None:
+    historical_input = _load_json("es_historical_input.valid.json")
+    historical_input["overnight_bars"][1]["timestamp"] = historical_input["overnight_bars"][0][
+        "timestamp"
+    ]
+
+    with pytest.raises(ValueError, match="overnight_bars must not contain duplicate timestamps"):
+        compile_es_packet(historical_input, _load_json("es_overlay.valid.json"))
+
+
+def test_compile_es_packet_rejects_current_rth_bars_across_multiple_dates() -> None:
+    historical_input = _load_json("es_historical_input.valid.json")
+    historical_input["current_rth_bars"][-1]["timestamp"] = "2026-01-15T16:00:00Z"
+
+    with pytest.raises(ValueError, match="current_rth_bars must all fall on one session date"):
+        compile_es_packet(historical_input, _load_json("es_overlay.valid.json"))
+
+
+def test_compile_es_packet_rejects_overnight_overlap_with_current_session() -> None:
+    historical_input = _load_json("es_historical_input.valid.json")
+    historical_input["overnight_bars"][-1]["timestamp"] = "2026-01-14T14:30:00Z"
+
+    with pytest.raises(ValueError, match="overnight_bars must end before current_rth_bars begin"):
+        compile_es_packet(historical_input, _load_json("es_overlay.valid.json"))
+
+
+def test_compile_es_packet_rejects_weekly_open_after_current_session_start() -> None:
+    historical_input = _load_json("es_historical_input.valid.json")
+    historical_input["weekly_open_bar"]["timestamp"] = "2026-01-14T14:31:00Z"
+
+    with pytest.raises(
+        ValueError, match="weekly_open_bar timestamp must not be after the first current_rth_bar"
+    ):
+        compile_es_packet(historical_input, _load_json("es_overlay.valid.json"))
+
+
+def test_compile_es_packet_rejects_insufficient_initial_balance_support() -> None:
+    historical_input = _load_json("es_historical_input.valid.json")
+    historical_input["current_rth_bars"] = historical_input["current_rth_bars"][:1]
+
+    with pytest.raises(
+        ValueError,
+        match="Current RTH bars must contain at least two bars inside the first 60 minutes",
+    ):
         compile_es_packet(historical_input, _load_json("es_overlay.valid.json"))
 
 
