@@ -5,7 +5,9 @@ from dataclasses import dataclass
 from typing import Any
 
 import pytest
+from google.genai import errors as genai_errors
 
+from ninjatradebuilder.config import load_gemini_startup_config
 from ninjatradebuilder.gemini_adapter import GeminiAdapterError, GeminiResponsesAdapter
 from ninjatradebuilder.runtime import StructuredGenerationRequest, execute_prompt
 from ninjatradebuilder.schemas.outputs import ContractAnalysis
@@ -958,9 +960,131 @@ def test_live_like_stage_b_scalar_assumptions_is_rejected() -> None:
 
 def test_default_client_fails_closed_when_env_var_is_absent(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.delenv("GEMINI_API_KEY", raising=False)
-    monkeypatch.delenv("GOOGLE_API_KEY", raising=False)
 
     with pytest.raises(GeminiAdapterError) as exc_info:
         GeminiResponsesAdapter.from_default_client(model="gemini-3.1-pro-preview")
 
-    assert "GEMINI_API_KEY or GOOGLE_API_KEY" in str(exc_info.value)
+    assert "GEMINI_API_KEY is required" in str(exc_info.value)
+
+
+def test_default_client_uses_bounded_http_options(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("GEMINI_API_KEY", "test-key")
+    monkeypatch.setenv("NINJATRADEBUILDER_GEMINI_TIMEOUT_SECONDS", "10")
+    monkeypatch.setenv("NINJATRADEBUILDER_GEMINI_MAX_RETRIES", "2")
+    monkeypatch.setenv("NINJATRADEBUILDER_GEMINI_RETRY_INITIAL_DELAY_SECONDS", "0.5")
+    monkeypatch.setenv("NINJATRADEBUILDER_GEMINI_RETRY_MAX_DELAY_SECONDS", "1.5")
+
+    captured: dict[str, Any] = {}
+
+    class FakeClient:
+        def __init__(self, **kwargs: Any) -> None:
+            captured.update(kwargs)
+
+    monkeypatch.setattr("ninjatradebuilder.gemini_adapter.genai.Client", FakeClient)
+
+    adapter = GeminiResponsesAdapter.from_default_client(model="gemini-3.1-pro-preview")
+
+    assert adapter.model == "gemini-3.1-pro-preview"
+    assert adapter.timeout_seconds == 10
+    assert adapter.max_retries == 2
+    assert captured["api_key"] == "test-key"
+    assert captured["http_options"].timeout == 10000
+    assert captured["http_options"].retry_options.attempts == 3
+    assert captured["http_options"].retry_options.initial_delay == 0.5
+    assert captured["http_options"].retry_options.max_delay == 1.5
+
+
+def test_timeout_errors_are_wrapped_with_operator_message() -> None:
+    timeout_exc = genai_errors.httpx.ReadTimeout("timed out")
+
+    class TimeoutModelsClient:
+        def generate_content(self, **kwargs: Any) -> Any:
+            raise timeout_exc
+
+    class TimeoutClient:
+        models = TimeoutModelsClient()
+
+    adapter = GeminiResponsesAdapter(
+        client=TimeoutClient(),
+        model="gemini-3.1-pro-preview",
+        timeout_seconds=5,
+        max_retries=1,
+    )
+
+    with pytest.raises(GeminiAdapterError) as exc_info:
+        adapter.generate_structured(
+            StructuredGenerationRequest(
+                prompt_id=8,
+                rendered_prompt="prompt",
+                expected_output_boundaries=("proposed_setup",),
+                schema_model_names=("ProposedSetup",),
+            )
+        )
+
+    message = str(exc_info.value)
+    assert "timed out after 5 seconds" in message
+    assert "after 2 attempt(s)" in message
+
+
+def test_api_errors_are_wrapped_with_operator_message() -> None:
+    api_exc = genai_errors.ServerError(503, {"error": {"message": "backend unavailable"}})
+
+    class ApiModelsClient:
+        def generate_content(self, **kwargs: Any) -> Any:
+            raise api_exc
+
+    class ApiClient:
+        models = ApiModelsClient()
+
+    adapter = GeminiResponsesAdapter(
+        client=ApiClient(),
+        model="gemini-3.1-pro-preview",
+        timeout_seconds=20,
+        max_retries=1,
+    )
+
+    with pytest.raises(GeminiAdapterError) as exc_info:
+        adapter.generate_structured(
+            StructuredGenerationRequest(
+                prompt_id=8,
+                rendered_prompt="prompt",
+                expected_output_boundaries=("proposed_setup",),
+                schema_model_names=("ProposedSetup",),
+            )
+        )
+
+    message = str(exc_info.value)
+    assert "Gemini request failed using model gemini-3.1-pro-preview" in message
+    assert "after 2 attempt(s)" in message
+
+
+def test_deadline_exceeded_api_errors_are_reported_as_timeouts() -> None:
+    api_exc = genai_errors.ServerError(504, {"error": {"message": "Deadline expired before operation could complete.", "status": "DEADLINE_EXCEEDED"}})
+
+    class ApiModelsClient:
+        def generate_content(self, **kwargs: Any) -> Any:
+            raise api_exc
+
+    class ApiClient:
+        models = ApiModelsClient()
+
+    adapter = GeminiResponsesAdapter(
+        client=ApiClient(),
+        model="gemini-3.1-pro-preview",
+        timeout_seconds=10,
+        max_retries=0,
+    )
+
+    with pytest.raises(GeminiAdapterError) as exc_info:
+        adapter.generate_structured(
+            StructuredGenerationRequest(
+                prompt_id=8,
+                rendered_prompt="prompt",
+                expected_output_boundaries=("proposed_setup",),
+                schema_model_names=("ProposedSetup",),
+            )
+        )
+
+    message = str(exc_info.value)
+    assert "timed out after 10 seconds" in message
+    assert "after 1 attempt(s)" in message

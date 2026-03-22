@@ -1,16 +1,18 @@
 from __future__ import annotations
 
 import json
-import os
 from dataclasses import dataclass
 from typing import Any, Mapping
 
+from .config import GeminiStartupConfig, load_gemini_startup_config
 from .runtime import StructuredGenerationRequest
 
 try:
     from google import genai
+    from google.genai import errors as genai_errors
 except ImportError:  # pragma: no cover - exercised only when SDK is absent locally
     genai = None  # type: ignore[assignment]
+    genai_errors = None  # type: ignore[assignment]
 
 
 class GeminiAdapterError(ValueError):
@@ -21,20 +23,39 @@ class GeminiAdapterError(ValueError):
 class GeminiResponsesAdapter:
     client: Any
     model: str
+    timeout_seconds: int | None = None
+    max_retries: int = 0
 
     @classmethod
     def from_default_client(cls, *, model: str) -> "GeminiResponsesAdapter":
         if genai is None:
             raise ImportError("google-genai SDK is required to construct the default Gemini client.")
-        api_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
-        if not api_key:
-            raise GeminiAdapterError(
-                "Gemini API key is required via GEMINI_API_KEY or GOOGLE_API_KEY."
-            )
-        return cls(client=genai.Client(api_key=api_key), model=model)
+        try:
+            config = load_gemini_startup_config(model=model)
+        except Exception as exc:
+            raise GeminiAdapterError(str(exc)) from exc
+        return cls.from_startup_config(config)
+
+    @classmethod
+    def from_startup_config(cls, config: GeminiStartupConfig) -> "GeminiResponsesAdapter":
+        if genai is None:
+            raise ImportError("google-genai SDK is required to construct the default Gemini client.")
+        client = genai.Client(
+            api_key=config.api_key,
+            http_options=cls._build_http_options(config),
+        )
+        return cls(
+            client=client,
+            model=config.model,
+            timeout_seconds=config.timeout_seconds,
+            max_retries=config.max_retries,
+        )
 
     def generate_structured(self, request: StructuredGenerationRequest) -> Mapping[str, Any]:
-        response = self.client.models.generate_content(**self._build_generate_params(request))
+        try:
+            response = self.client.models.generate_content(**self._build_generate_params(request))
+        except Exception as exc:
+            raise self._wrap_provider_error(exc) from exc
         envelope = self._extract_envelope(response)
         self._validate_boundary(request, envelope)
 
@@ -43,6 +64,45 @@ class GeminiResponsesAdapter:
             raise TypeError("Gemini envelope payload must be a structured object.")
 
         return dict(payload)
+
+    @staticmethod
+    def _build_http_options(config: GeminiStartupConfig) -> Any:
+        if genai is None:
+            raise ImportError("google-genai SDK is required to construct Gemini HTTP options.")
+        return genai.types.HttpOptions(
+            timeout=config.timeout_seconds * 1000,
+            retryOptions=genai.types.HttpRetryOptions(
+                attempts=config.total_attempts,
+                initialDelay=config.retry_initial_delay_seconds,
+                maxDelay=config.retry_max_delay_seconds,
+                expBase=2.0,
+                jitter=0.0,
+                httpStatusCodes=[408, 429, 500, 502, 503, 504],
+            ),
+        )
+
+    def _wrap_provider_error(self, exc: Exception) -> GeminiAdapterError:
+        if genai_errors is not None and isinstance(exc, genai_errors.httpx.TimeoutException):
+            return GeminiAdapterError(
+                "Gemini request timed out "
+                f"after {self.timeout_seconds or 'configured'} seconds using model {self.model} "
+                f"after {self.max_retries + 1} attempt(s)."
+            )
+        if genai_errors is not None and isinstance(exc, genai_errors.APIError):
+            error_text = str(exc)
+            if getattr(exc, "code", None) == 504 or "DEADLINE_EXCEEDED" in error_text:
+                return GeminiAdapterError(
+                    "Gemini request timed out "
+                    f"after {self.timeout_seconds or 'configured'} seconds using model {self.model} "
+                    f"after {self.max_retries + 1} attempt(s)."
+                )
+            return GeminiAdapterError(
+                "Gemini request failed "
+                f"using model {self.model} after {self.max_retries + 1} attempt(s): {error_text}"
+            )
+        return GeminiAdapterError(
+            f"Gemini request failed using model {self.model}: {exc}"
+        )
 
     def _build_generate_params(self, request: StructuredGenerationRequest) -> dict[str, Any]:
         return {

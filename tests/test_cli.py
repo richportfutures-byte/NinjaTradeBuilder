@@ -64,9 +64,11 @@ def test_cli_runs_bundle_packet_and_prints_pipeline_json(monkeypatch) -> None:
     captured: dict[str, object] = {}
 
     class FakeGeminiAdapter:
-        def __init__(self, *, client, model):
+        def __init__(self, *, client, model, timeout_seconds=None, max_retries=0):
             captured["client"] = client
             captured["model"] = model
+            captured["timeout_seconds"] = timeout_seconds
+            captured["max_retries"] = max_retries
 
         def generate_structured(self, request):
             captured["prompt_id"] = request.prompt_id
@@ -85,7 +87,7 @@ def test_cli_runs_bundle_packet_and_prints_pipeline_json(monkeypatch) -> None:
         ],
         stdout=stdout,
         stderr=stderr,
-        client_factory=lambda api_key: {"api_key": api_key},
+        client_factory=lambda config: config,
     )
 
     output = stdout.getvalue()
@@ -94,8 +96,12 @@ def test_cli_runs_bundle_packet_and_prints_pipeline_json(monkeypatch) -> None:
     assert '"termination_stage": "contract_market_read"' in output
     assert '"final_decision": "NO_TRADE"' in output
     assert '"contract": "ES"' in output
-    assert captured["client"] == {"api_key": "test-key"}
+    assert captured["client"].api_key == "test-key"
+    assert captured["client"].timeout_seconds == 20
+    assert captured["client"].max_retries == 1
     assert captured["model"] == "gemini-test-model"
+    assert captured["timeout_seconds"] == 20
+    assert captured["max_retries"] == 1
     assert captured["prompt_id"] == 2
 
 
@@ -117,3 +123,26 @@ def test_cli_rejects_bundle_packet_without_contract(monkeypatch) -> None:
     assert exit_code == 2
     assert stdout.getvalue() == ""
     assert "Bundle packet files require --contract." in stderr.getvalue()
+
+
+def test_cli_rejects_invalid_timeout_configuration(monkeypatch) -> None:
+    monkeypatch.setenv("GEMINI_API_KEY", "test-key")
+    monkeypatch.setenv("NINJATRADEBUILDER_GEMINI_TIMEOUT_SECONDS", "9")
+    stdout = io.StringIO()
+    stderr = io.StringIO()
+
+    exit_code = run_cli(
+        [
+            "--packet",
+            str(FIXTURES_DIR / "packets.valid.json"),
+            "--contract",
+            "ES",
+        ],
+        stdout=stdout,
+        stderr=stderr,
+        client_factory=lambda config: config,
+    )
+
+    assert exit_code == 2
+    assert stdout.getvalue() == ""
+    assert "NINJATRADEBUILDER_GEMINI_TIMEOUT_SECONDS must be >= 10." in stderr.getvalue()

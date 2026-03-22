@@ -10,14 +10,19 @@ from typing import Any
 
 from pydantic import BaseModel
 
-from .config import DEFAULT_GEMINI_MODEL, ConfigError, load_gemini_startup_config
-from .gemini_adapter import GeminiResponsesAdapter, genai
+from .config import (
+    DEFAULT_GEMINI_MODEL,
+    ConfigError,
+    GeminiStartupConfig,
+    load_gemini_startup_config,
+)
+from .gemini_adapter import GeminiAdapterError, GeminiResponsesAdapter, genai
 from .pipeline import PipelineExecutionResult, run_pipeline
 from .schemas.packet import HistoricalPacket
 from .validation import validate_historical_packet
 
 SUPPORTED_CONTRACTS = ("ES", "NQ", "CL", "ZN", "6E", "MGC")
-ClientFactory = Callable[[str], Any]
+ClientFactory = Callable[[GeminiStartupConfig], Any]
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -106,12 +111,15 @@ def serialize_pipeline_result(result: PipelineExecutionResult) -> dict[str, Any]
     return _normalize_for_json(result)
 
 
-def _build_client(api_key: str, client_factory: ClientFactory | None) -> Any:
+def _build_client(config: GeminiStartupConfig, client_factory: ClientFactory | None) -> Any:
     if client_factory is not None:
-        return client_factory(api_key)
+        return client_factory(config)
     if genai is None:
         raise ImportError("google-genai SDK is required for Gemini CLI execution.")
-    return genai.Client(api_key=api_key)
+    return genai.Client(
+        api_key=config.api_key,
+        http_options=GeminiResponsesAdapter._build_http_options(config),
+    )
 
 
 def run_cli(
@@ -134,15 +142,17 @@ def run_cli(
             or packet.market_packet.timestamp.isoformat().replace("+00:00", "Z")
         )
         adapter = GeminiResponsesAdapter(
-            client=_build_client(config.api_key, client_factory),
+            client=_build_client(config, client_factory),
             model=config.model,
+            timeout_seconds=config.timeout_seconds,
+            max_retries=config.max_retries,
         )
         result = run_pipeline(
             packet=packet,
             evaluation_timestamp_iso=evaluation_timestamp,
             model_adapter=adapter,
         )
-    except (ConfigError, ImportError, ValueError) as exc:
+    except (ConfigError, GeminiAdapterError, ImportError, ValueError) as exc:
         stderr.write(f"ERROR: {exc}\n")
         return 2
 

@@ -12,6 +12,20 @@ It is intended for operator verification and smoke execution, not production aut
 - run from the repo root
 - `GEMINI_API_KEY` set in the shell environment
 
+Optional provider policy env vars:
+
+- `NINJATRADEBUILDER_GEMINI_MODEL`
+  Default: `gemini-3.1-pro-preview`
+- `NINJATRADEBUILDER_GEMINI_TIMEOUT_SECONDS`
+  Default: `20`
+  Minimum: `10`
+- `NINJATRADEBUILDER_GEMINI_MAX_RETRIES`
+  Default: `1`
+- `NINJATRADEBUILDER_GEMINI_RETRY_INITIAL_DELAY_SECONDS`
+  Default: `1.0`
+- `NINJATRADEBUILDER_GEMINI_RETRY_MAX_DELAY_SECONDS`
+  Default: `4.0`
+
 Install with:
 
 ```bash
@@ -37,6 +51,7 @@ env PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m ninjatradebuilder.cli \
 - If `--packet` is already a single `historical_packet_v1` JSON object, omit `--contract`.
 - `--evaluation-timestamp` is optional. If omitted, the CLI uses `market_packet.timestamp`.
 - `--model` is optional. The default is `gemini-3.1-pro-preview`.
+- Gemini requests are bounded by the centralized timeout and retry env vars above.
 
 Equivalent Python API form:
 
@@ -82,10 +97,10 @@ print(result.final_decision)
 - fail-closed termination at the first valid no-go stage
 - explicit final decision mapping at Stage D
 - clear startup failure when `GEMINI_API_KEY` is missing
+- bounded Gemini request policy with explicit timeout/retry behavior
 
 ## What this path does not provide yet
 
 - persistence or audit logging
-- retry policy
 - structured observability
 - deployment-specific handler for Netlify or other serverless targets
