@@ -317,3 +317,87 @@ def test_readiness_web_endpoint_accepts_cl_packet_input(monkeypatch) -> None:
     assert captured_adapter["client"].api_key == "test-key"
     assert captured_adapter["prompt_id"] == 10
     assert '"contract_specific_macro_state": "eia_sensitive"' in captured_adapter["rendered_prompt"]
+
+
+def test_readiness_web_endpoint_accepts_6e_packet_input(monkeypatch) -> None:
+    monkeypatch.setenv("GEMINI_API_KEY", "test-key")
+    packet = _packet_payload("6E")
+    readiness_trigger = json.loads((FIXTURES_DIR / "zn_recheck_trigger.valid.json").read_text())
+    expected_output = _expected_readiness_output("6E")
+    captured_adapter: dict[str, Any] = {}
+
+    class FakeGeminiAdapter:
+        def __init__(self, *, client, model, timeout_seconds=None, max_retries=0):
+            captured_adapter["client"] = client
+
+        def generate_structured(self, request):
+            captured_adapter["prompt_id"] = request.prompt_id
+            captured_adapter["rendered_prompt"] = request.rendered_prompt
+            return expected_output
+
+    monkeypatch.setattr("ninjatradebuilder.readiness_web.GeminiResponsesAdapter", FakeGeminiAdapter)
+
+    app = build_readiness_web_app(client_factory=lambda config: config)
+    request_body = json.dumps(
+        {
+            "packet": packet,
+            "readiness_trigger": readiness_trigger,
+        }
+    ).encode("utf-8")
+    environ = {
+        "REQUEST_METHOD": "POST",
+        "PATH_INFO": "/api/readiness",
+        "CONTENT_LENGTH": str(len(request_body)),
+        "wsgi.input": io.BytesIO(request_body),
+    }
+    response_capture, start_response = _start_response_capture()
+
+    response_body = b"".join(app(environ, start_response))
+
+    assert response_capture["status"] == "200 OK"
+    assert json.loads(response_body.decode("utf-8")) == expected_output
+    assert captured_adapter["client"].api_key == "test-key"
+    assert captured_adapter["prompt_id"] == 10
+    assert '"contract_specific_macro_state": "dxy_supported_europe_drive"' in captured_adapter["rendered_prompt"]
+
+
+def test_readiness_web_endpoint_accepts_mgc_packet_input(monkeypatch) -> None:
+    monkeypatch.setenv("GEMINI_API_KEY", "test-key")
+    packet = _packet_payload("MGC")
+    readiness_trigger = json.loads((FIXTURES_DIR / "zn_recheck_trigger.valid.json").read_text())
+    expected_output = _expected_readiness_output("MGC")
+    captured_adapter: dict[str, Any] = {}
+
+    class FakeGeminiAdapter:
+        def __init__(self, *, client, model, timeout_seconds=None, max_retries=0):
+            captured_adapter["client"] = client
+
+        def generate_structured(self, request):
+            captured_adapter["prompt_id"] = request.prompt_id
+            captured_adapter["rendered_prompt"] = request.rendered_prompt
+            return expected_output
+
+    monkeypatch.setattr("ninjatradebuilder.readiness_web.GeminiResponsesAdapter", FakeGeminiAdapter)
+
+    app = build_readiness_web_app(client_factory=lambda config: config)
+    request_body = json.dumps(
+        {
+            "packet": packet,
+            "readiness_trigger": readiness_trigger,
+        }
+    ).encode("utf-8")
+    environ = {
+        "REQUEST_METHOD": "POST",
+        "PATH_INFO": "/api/readiness",
+        "CONTENT_LENGTH": str(len(request_body)),
+        "wsgi.input": io.BytesIO(request_body),
+    }
+    response_capture, start_response = _start_response_capture()
+
+    response_body = b"".join(app(environ, start_response))
+
+    assert response_capture["status"] == "200 OK"
+    assert json.loads(response_body.decode("utf-8")) == expected_output
+    assert captured_adapter["client"].api_key == "test-key"
+    assert captured_adapter["prompt_id"] == 10
+    assert '"contract_specific_macro_state": "macro_supportive"' in captured_adapter["rendered_prompt"]
