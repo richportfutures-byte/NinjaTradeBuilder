@@ -1,0 +1,131 @@
+{
+  "$schema": "historical_packet_v1",
+  "attached_visuals": {
+    "$schema": "attached_visuals_v1",
+    "daily_chart_attached": true,
+    "dom_snapshot_attached": true,
+    "execution_chart_attached": true,
+    "footprint_chart_attached": true,
+    "higher_timeframe_chart_attached": true,
+    "tpo_chart_attached": true,
+    "volume_profile_attached": true
+  },
+  "challenge_state": {
+    "$schema": "challenge_state_v1",
+    "cooldown_after_stopout_minutes": 30,
+    "current_balance": 50000.0,
+    "current_open_positions": [],
+    "daily_loss_stop_dollars": 10000.0,
+    "daily_realized_pnl": 0.0,
+    "event_lockout_minutes_after": 5,
+    "event_lockout_minutes_before": 15,
+    "last_stopout_time_by_contract": {
+      "6E": null,
+      "CL": null,
+      "ES": null,
+      "MGC": null,
+      "NQ": null,
+      "ZN": null
+    },
+    "last_trade_direction_by_contract": {
+      "6E": null,
+      "CL": null,
+      "ES": null,
+      "MGC": null,
+      "NQ": null,
+      "ZN": null
+    },
+    "max_position_size_by_contract": {
+      "6E": 4,
+      "CL": 2,
+      "ES": 2,
+      "MGC": 12,
+      "NQ": 2,
+      "ZN": 4
+    },
+    "max_risk_per_trade_dollars": 1450.0,
+    "max_trades_per_contract_per_day": 3,
+    "max_trades_per_day": 60,
+    "minimum_reward_to_risk": 1.5,
+    "profit_target_dollars": 400000.0,
+    "trades_today_all": 0,
+    "trades_today_by_contract": {
+      "6E": 0,
+      "CL": 0,
+      "ES": 0,
+      "MGC": 0,
+      "NQ": 0,
+      "ZN": 0
+    }
+  },
+  "contract_metadata": {
+    "$schema": "contract_metadata_v1",
+    "allowed_hours_end_et": "13:15",
+    "allowed_hours_start_et": "08:20",
+    "contract": "MGC",
+    "dollar_per_tick": 1.0,
+    "max_position_size": 12,
+    "point_value": 10.0,
+    "slippage_ticks": 1,
+    "tick_size": 0.1
+  },
+  "contract_specific_extension": {
+    "$schema": "contract_specific_extension_v1",
+    "contract": "MGC",
+    "dxy_context": "weakening",
+    "macro_fear_catalyst_summary": "none",
+    "swing_penetration_volume_summary": "High volume acceptance above the weekly pivot.",
+    "yield_context": "falling"
+  },
+  "market_packet": {
+    "$schema": "market_packet_v1",
+    "avg_20d_session_range": 18.4,
+    "contract": "MGC",
+    "cross_market_context": {
+      "equity_tone": "risk-off",
+      "silver_direction": "up"
+    },
+    "cumulative_delta": 980.0,
+    "current_price": 2053.3,
+    "current_session_poc": 2051.2,
+    "current_session_vah": 2053.8,
+    "current_session_val": 2049.6,
+    "current_volume_vs_average": 1.02,
+    "data_quality_flags": [],
+    "event_calendar_remainder": [
+      {
+        "event_state": "upcoming",
+        "minutes_until": 235,
+        "name": "Fed Minutes",
+        "tier": 1,
+        "time": "2026-01-14T19:00:00Z"
+      }
+    ],
+    "key_hvns": [
+      2051.2,
+      2046.4
+    ],
+    "key_lvns": [
+      2056.5
+    ],
+    "major_higher_timeframe_levels": [
+      2060.0,
+      2040.0
+    ],
+    "opening_type": "Open-Test-Drive",
+    "overnight_high": 2050.6,
+    "overnight_low": 2042.4,
+    "previous_session_poc": 2046.4,
+    "previous_session_vah": 2048.9,
+    "previous_session_val": 2043.7,
+    "prior_day_close": 2044.2,
+    "prior_day_high": 2058.1,
+    "prior_day_low": 2039.5,
+    "session_open": 2048.7,
+    "session_range": 9.1,
+    "session_type": "RTH",
+    "singles_excess_poor_high_low_notes": "Weekly balance high approaching.",
+    "timestamp": "2026-01-14T15:10:00Z",
+    "vwap": 2050.9
+  }
+}

@@ -7,6 +7,7 @@ NinjaTradeBuilder is a staged futures-evaluation runtime for a simulated trading
 - Priority 1 behavioral baseline is frozen and validated on the canonical contract edge-case matrix.
 - The repo is installable as a Python package.
 - Thin operator CLIs exist for local pipeline execution and operator-invoked readiness verification.
+- A separate deterministic readiness v2 operator surface exists for bounded six-contract bootstrap, update, and replay flows across `6E`, `CL`, `ES`, `MGC`, `NQ`, and `ZN`.
 - Gemini execution uses bounded timeout and retry policy with clear failure output.
 - Local JSONL per-run audit logging exists.
 - GitHub Actions now runs install, test, and deterministic CLI smoke checks on push and PR.
@@ -58,6 +59,10 @@ env PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m ninjatradebuilder.readiness_ve
 
 Artifacts default to `./artifacts/readiness-verification/<timestamp>.json` unless `--artifact-file` is provided. CI still does **not** run live Gemini readiness verification.
 
+## Readiness V2 Operator Surface
+
+The repo also includes a separate deterministic readiness v2 operator surface at `python -m ninjatradebuilder.readiness_v2`. This is distinct from legacy readiness v1: it emits schema-backed JSON artifacts for bounded `bootstrap`, `update`, and `replay` flows and currently supports `6E`, `CL`, `ES`, `MGC`, `NQ`, and `ZN`. See `docs/readiness-v2-operator-quickstart.md` for exact invocation patterns.
+
 ## Required Environment Variables
 
 - `GEMINI_API_KEY`
@@ -73,6 +78,7 @@ Optional runtime policy variables:
 ## Key Docs
 
 - Operator quickstart: [docs/operator-quickstart.md](docs/operator-quickstart.md)
+- Readiness v2 operator quickstart: [docs/readiness-v2-operator-quickstart.md](docs/readiness-v2-operator-quickstart.md)
 - Priority 1 conformance baseline: [docs/priority-1-conformance-baseline.md](docs/priority-1-conformance-baseline.md)
 - Deployment and integration readiness: [docs/deployment-integration-readiness.md](docs/deployment-integration-readiness.md)
 - User workflow narrative: [docs/user-workflow-narrative.md](docs/user-workflow-narrative.md)
@@ -101,3 +107,4 @@ GitHub Actions runs a thin smoke workflow on every push and pull request:
 - editable package install
 - full test suite
 - deterministic CLI smoke path with no live Gemini dependency
+- deterministic readiness v2 operator smoke path with no live Gemini dependency

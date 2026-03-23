@@ -1,0 +1,323 @@
+{
+  "$schema": "readiness_v2_watch_update_artifact_v1",
+  "contract": "ZN",
+  "evaluation_timestamp": "2026-01-14T15:08:00Z",
+  "mode": "update",
+  "prior_watch_id": "zn-watch-20260114t150500z",
+  "watch": {
+    "$schema": "readiness_watch_v1",
+    "active_trigger_family": "price_level_touch",
+    "allowed_next_actions": [
+      "ARCHIVE_WATCH",
+      "REBUILD_PREMARKET_BRIEFING"
+    ],
+    "context_snapshot": {
+      "active_data_quality_flags": [
+        "auction_proximity_risk"
+      ],
+      "auction_proximity_state": "SCHEDULED",
+      "contamination_reasons": [],
+      "current_price": 110.28125,
+      "directional_lean": "BULLISH",
+      "evaluation_timestamp": "2026-01-14T15:08:00Z",
+      "event_lockout_active": false,
+      "event_risk_state": "CLEAR",
+      "freshness_state": "FRESH",
+      "governance_lockout_active": false,
+      "lockout_reasons": [],
+      "macro_release_context": "CPI slightly soft, yields initially down then stabilized.",
+      "minutes_until_next_event": 172,
+      "next_event_name": "10Y Auction",
+      "next_event_time": "2026-01-14T18:00:00Z",
+      "packet_age_seconds": 0,
+      "packet_timestamp": "2026-01-14T15:08:00Z",
+      "session_access_state": "INSIDE_ALLOWED_HOURS",
+      "treasury_auction_schedule": "today 13:00 10Y",
+      "value_location_state": "BELOW_VAL"
+    },
+    "contract": "ZN",
+    "created_at": "2026-01-14T15:05:00Z",
+    "detected_changes": [
+      {
+        "detail": "Value location moved from INSIDE_VALUE to BELOW_VAL.",
+        "from_value": "INSIDE_VALUE",
+        "kind": "value_location_change",
+        "to_value": "BELOW_VAL"
+      },
+      {
+        "detail": "The active trigger can no longer be used without rebuilding the watch.",
+        "from_value": "ACTIVE",
+        "kind": "trigger_invalidation",
+        "to_value": "INVALIDATED"
+      },
+      {
+        "detail": "Deterministic watch conditions now require the current watch to be retired.",
+        "from_value": "ARMED_WAITING",
+        "kind": "thesis_invalidation",
+        "to_value": "THESIS_INVALIDATED"
+      },
+      {
+        "detail": "Operator routing changed from WAIT to EXPIRE_WATCH.",
+        "from_value": "WAIT",
+        "kind": "routing_recommendation_change",
+        "to_value": "EXPIRE_WATCH"
+      }
+    ],
+    "expiry_policy": {
+      "expires_at": "2026-01-14T21:05:00Z",
+      "reason": "expires_with_briefing_window"
+    },
+    "history": [
+      {
+        "change_summary": "Initialized watch at revision 1 in ARMED_WAITING with WAIT.",
+        "detected_change_kinds": [],
+        "evaluated_at": "2026-01-14T15:05:00Z",
+        "packet_timestamp": "2026-01-14T15:05:00Z",
+        "prior_revision": null,
+        "prior_watch_id": null,
+        "revision": 1,
+        "routing_recommendation": "WAIT",
+        "state": "ARMED_WAITING",
+        "terminal_reason": null,
+        "transition_reason": "initialized",
+        "trigger_truth_state": "NOT_OBSERVED"
+      },
+      {
+        "change_summary": "Deterministic invalidation advanced the watch to THESIS_INVALIDATED with EXPIRE_WATCH.",
+        "detected_change_kinds": [
+          "value_location_change",
+          "trigger_invalidation",
+          "thesis_invalidation",
+          "routing_recommendation_change"
+        ],
+        "evaluated_at": "2026-01-14T15:08:00Z",
+        "packet_timestamp": "2026-01-14T15:08:00Z",
+        "prior_revision": 1,
+        "prior_watch_id": "zn-watch-20260114t150500z",
+        "revision": 2,
+        "routing_recommendation": "EXPIRE_WATCH",
+        "state": "THESIS_INVALIDATED",
+        "terminal_reason": "deterministic_invalidation_condition_met",
+        "transition_reason": "thesis_invalidated",
+        "trigger_truth_state": "NOT_OBSERVED"
+      }
+    ],
+    "invalidation_rules": [
+      {
+        "comparison": "LESS_THAN_OR_EQUAL",
+        "description": "A break below developing VAL 110.296875 invalidates the bullish or balanced watch framing.",
+        "effective_at": null,
+        "flag": null,
+        "kind": "PRICE_BREACH",
+        "price_level": 110.296875,
+        "provenance": [
+          {
+            "detail": "The invalidation level is taken directly from the developing value boundary.",
+            "kind": "field",
+            "observed_at": "2026-01-14T15:05:00Z",
+            "provenance_id": "price_level",
+            "source_path": "market_packet.current_session_val",
+            "value": "110.296875"
+          },
+          {
+            "detail": "The comparison direction is selected from the deterministic directional lean.",
+            "kind": "derived_condition",
+            "observed_at": "2026-01-14T15:05:00Z",
+            "provenance_id": "comparison",
+            "source_path": "derived.invalidation_comparison",
+            "value": "LESS_THAN_OR_EQUAL"
+          }
+        ],
+        "rule_id": "price_structure_break"
+      }
+    ],
+    "last_evaluated_at": "2026-01-14T15:08:00Z",
+    "last_observation": {
+      "context_change": "THESIS_INVALIDATED",
+      "note": "The active trigger became unusable because the watch thesis was invalidated.",
+      "observed_at": "2026-01-14T15:08:00Z",
+      "trigger_truth_state": "NOT_OBSERVED"
+    },
+    "operator_claims": [
+      {
+        "category": "state",
+        "claim_id": "watch_state_reason",
+        "evidence_fields": [
+          "context_snapshot.current_price",
+          "context_snapshot.value_location_state",
+          "trigger_payload.family"
+        ],
+        "provenance": [
+          {
+            "detail": "The watch state is the deterministic lifecycle output at the current evaluation time.",
+            "kind": "derived_condition",
+            "observed_at": "2026-01-14T15:08:00Z",
+            "provenance_id": "watch_state",
+            "source_path": "derived.watch_state",
+            "value": "THESIS_INVALIDATED"
+          },
+          {
+            "detail": "Current price anchors the operator-facing watch state summary.",
+            "kind": "field",
+            "observed_at": "2026-01-14T15:08:00Z",
+            "provenance_id": "current_price",
+            "source_path": "context_snapshot.current_price",
+            "value": "110.28125"
+          },
+          {
+            "detail": "The active price-touch level anchors the watch monitoring statement.",
+            "kind": "field",
+            "observed_at": "2026-01-14T15:08:00Z",
+            "provenance_id": "trigger_price_level",
+            "source_path": "trigger_payload.price_level",
+            "value": "110.421875"
+          },
+          {
+            "detail": "Value location anchors the current or changed value-context reference.",
+            "kind": "field",
+            "observed_at": "2026-01-14T15:08:00Z",
+            "provenance_id": "value_location_state",
+            "source_path": "context_snapshot.value_location_state",
+            "value": "BELOW_VAL"
+          },
+          {
+            "detail": "Prior value location anchors the value-context transition reference.",
+            "kind": "field",
+            "observed_at": "2026-01-14T15:05:00Z",
+            "provenance_id": "prior_value_location_state",
+            "source_path": "prior_watch.context_snapshot.value_location_state",
+            "value": "INSIDE_VALUE"
+          },
+          {
+            "detail": "Trigger truth state anchors whether the watch is still waiting or observed.",
+            "kind": "derived_condition",
+            "observed_at": "2026-01-14T15:08:00Z",
+            "provenance_id": "trigger_truth_state",
+            "source_path": "derived.trigger_truth_state",
+            "value": "NOT_OBSERVED"
+          },
+          {
+            "detail": "Terminal reason anchors the deterministic terminal watch state.",
+            "kind": "derived_condition",
+            "observed_at": "2026-01-14T15:08:00Z",
+            "provenance_id": "terminal_reason",
+            "source_path": "derived.terminal_reason",
+            "value": "deterministic_invalidation_condition_met"
+          }
+        ],
+        "statement": "ZN watch is thesis_invalidated because current price 110.28125 breached the active invalidation level."
+      },
+      {
+        "category": "routing",
+        "claim_id": "watch_routing_reason",
+        "evidence_fields": [
+          "routing_recommendation",
+          "context_snapshot.freshness_state",
+          "context_snapshot.session_access_state"
+        ],
+        "provenance": [
+          {
+            "detail": "Routing recommendation is the deterministic operator action output.",
+            "kind": "derived_condition",
+            "observed_at": "2026-01-14T15:08:00Z",
+            "provenance_id": "routing_recommendation",
+            "source_path": "derived.routing_recommendation",
+            "value": "EXPIRE_WATCH"
+          },
+          {
+            "detail": "Trigger truth state informs whether the operator must keep waiting or requery Stage B.",
+            "kind": "derived_condition",
+            "observed_at": "2026-01-14T15:08:00Z",
+            "provenance_id": "trigger_truth_state",
+            "source_path": "derived.trigger_truth_state",
+            "value": "NOT_OBSERVED"
+          },
+          {
+            "detail": "Freshness state constrains whether waiting is a contamination hold or a clean watch state.",
+            "kind": "field",
+            "observed_at": "2026-01-14T15:08:00Z",
+            "provenance_id": "freshness_state",
+            "source_path": "context_snapshot.freshness_state",
+            "value": "FRESH"
+          },
+          {
+            "detail": "Session access state constrains whether waiting is a lockout hold.",
+            "kind": "field",
+            "observed_at": "2026-01-14T15:08:00Z",
+            "provenance_id": "session_access_state",
+            "source_path": "context_snapshot.session_access_state",
+            "value": "INSIDE_ALLOWED_HOURS"
+          }
+        ],
+        "statement": "Expire the watch because deterministic invalidation or expiry conditions closed the watch."
+      },
+      {
+        "category": "invalidation",
+        "claim_id": "watch_invalidation_reason",
+        "evidence_fields": [
+          "invalidation_rules",
+          "context_snapshot.current_price"
+        ],
+        "provenance": [
+          {
+            "detail": "Current price anchors the invalidation check.",
+            "kind": "field",
+            "observed_at": "2026-01-14T15:08:00Z",
+            "provenance_id": "current_price",
+            "source_path": "context_snapshot.current_price",
+            "value": "110.28125"
+          },
+          {
+            "detail": "The invalidation level is taken directly from the developing value boundary.",
+            "kind": "field",
+            "observed_at": "2026-01-14T15:05:00Z",
+            "provenance_id": "price_level",
+            "source_path": "market_packet.current_session_val",
+            "value": "110.296875"
+          },
+          {
+            "detail": "The comparison direction is selected from the deterministic directional lean.",
+            "kind": "derived_condition",
+            "observed_at": "2026-01-14T15:05:00Z",
+            "provenance_id": "comparison",
+            "source_path": "derived.invalidation_comparison",
+            "value": "LESS_THAN_OR_EQUAL"
+          }
+        ],
+        "statement": "The active invalidation guard is breached because current price 110.28125 is through 110.296875."
+      }
+    ],
+    "operator_summary": "ZN watch is thesis_invalidated because current price 110.28125 breached the active invalidation level. Expire the watch because deterministic invalidation or expiry conditions closed the watch. The active invalidation guard is breached because current price 110.28125 is through 110.296875.",
+    "operator_summary_claim_ids": [
+      "watch_state_reason",
+      "watch_routing_reason",
+      "watch_invalidation_reason"
+    ],
+    "post_trigger_policy": "STRUCTURE_CONFIRMATION_REQUIRED",
+    "prior_revision": 1,
+    "prior_watch_id": "zn-watch-20260114t150500z",
+    "revision": 2,
+    "routing_recommendation": "EXPIRE_WATCH",
+    "routing_target": "NONE",
+    "source_kind": "premarket_briefing",
+    "source_refs": {
+      "active_trigger_id": "zn-trigger-current_session_vah-20260114t150500z",
+      "briefing_id": "zn-briefing-20260114t150500z",
+      "preserved_contract_analysis_ref": null,
+      "trigger_ids": [
+        "zn-trigger-current_session_vah-20260114t150500z",
+        "zn-trigger-recheck-20260114t150500z"
+      ]
+    },
+    "state": "THESIS_INVALIDATED",
+    "terminal_reason": "deterministic_invalidation_condition_met",
+    "trigger_payload": {
+      "buffer_ticks": 0,
+      "family": "price_level_touch",
+      "price_level": 110.421875,
+      "recheck_at_time": null
+    },
+    "updated_at": "2026-01-14T15:08:00Z",
+    "watch_id": "zn-watch-20260114t150500z"
+  }
+}

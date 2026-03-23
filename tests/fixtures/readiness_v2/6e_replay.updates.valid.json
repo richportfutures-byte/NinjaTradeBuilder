@@ -1,0 +1,431 @@
+[
+  {
+    "evaluation_timestamp": "2026-01-14T15:10:00Z",
+    "packet": {
+      "$schema": "historical_packet_v1",
+      "attached_visuals": {
+        "$schema": "attached_visuals_v1",
+        "daily_chart_attached": true,
+        "dom_snapshot_attached": true,
+        "execution_chart_attached": true,
+        "footprint_chart_attached": true,
+        "higher_timeframe_chart_attached": true,
+        "tpo_chart_attached": true,
+        "volume_profile_attached": true
+      },
+      "challenge_state": {
+        "$schema": "challenge_state_v1",
+        "cooldown_after_stopout_minutes": 30,
+        "current_balance": 50000.0,
+        "current_open_positions": [],
+        "daily_loss_stop_dollars": 10000.0,
+        "daily_realized_pnl": 0.0,
+        "event_lockout_minutes_after": 5,
+        "event_lockout_minutes_before": 15,
+        "last_stopout_time_by_contract": {
+          "6E": null,
+          "CL": null,
+          "ES": null,
+          "MGC": null,
+          "NQ": null,
+          "ZN": null
+        },
+        "last_trade_direction_by_contract": {
+          "6E": null,
+          "CL": null,
+          "ES": null,
+          "MGC": null,
+          "NQ": null,
+          "ZN": null
+        },
+        "max_position_size_by_contract": {
+          "6E": 4,
+          "CL": 2,
+          "ES": 2,
+          "MGC": 12,
+          "NQ": 2,
+          "ZN": 4
+        },
+        "max_risk_per_trade_dollars": 1450.0,
+        "max_trades_per_contract_per_day": 3,
+        "max_trades_per_day": 60,
+        "minimum_reward_to_risk": 1.5,
+        "profit_target_dollars": 400000.0,
+        "trades_today_all": 0,
+        "trades_today_by_contract": {
+          "6E": 0,
+          "CL": 0,
+          "ES": 0,
+          "MGC": 0,
+          "NQ": 0,
+          "ZN": 0
+        }
+      },
+      "contract_metadata": {
+        "$schema": "contract_metadata_v1",
+        "allowed_hours_end_et": "12:00",
+        "allowed_hours_start_et": "08:00",
+        "contract": "6E",
+        "dollar_per_tick": 6.25,
+        "max_position_size": 4,
+        "point_value": 125000.0,
+        "slippage_ticks": 1,
+        "tick_size": 5e-05
+      },
+      "contract_specific_extension": {
+        "$schema": "contract_specific_extension_v1",
+        "asia_high_low": {
+          "high": 1.0892,
+          "low": 1.0876
+        },
+        "contract": "6E",
+        "dxy_context": "weakening",
+        "europe_initiative_status": "Europe drove higher",
+        "london_high_low": {
+          "high": 1.0914,
+          "low": 1.0886
+        },
+        "ny_high_low_so_far": {
+          "high": 1.0916,
+          "low": 1.0898
+        }
+      },
+      "market_packet": {
+        "$schema": "market_packet_v1",
+        "avg_20d_session_range": 0.0052,
+        "contract": "6E",
+        "cross_market_context": {
+          "dxy_direction": "weakening"
+        },
+        "cumulative_delta": 1260.0,
+        "current_price": 1.09118,
+        "current_session_poc": 1.09065,
+        "current_session_vah": 1.0914,
+        "current_session_val": 1.0899,
+        "current_volume_vs_average": 0.96,
+        "data_quality_flags": [],
+        "event_calendar_remainder": [
+          {
+            "event_state": "upcoming",
+            "minutes_until": 115,
+            "name": "ECB Speaker",
+            "tier": 2,
+            "time": "2026-01-14T16:00:00Z"
+          }
+        ],
+        "key_hvns": [
+          1.09065,
+          1.08895
+        ],
+        "key_lvns": [
+          1.0918
+        ],
+        "major_higher_timeframe_levels": [
+          1.093,
+          1.086
+        ],
+        "opening_type": "Open-Auction",
+        "overnight_high": 1.0908,
+        "overnight_low": 1.0881,
+        "previous_session_poc": 1.08895,
+        "previous_session_vah": 1.0897,
+        "previous_session_val": 1.0882,
+        "prior_day_close": 1.0889,
+        "prior_day_high": 1.0921,
+        "prior_day_low": 1.0864,
+        "session_open": 1.0895,
+        "session_range": 0.00215,
+        "session_type": "RTH",
+        "singles_excess_poor_high_low_notes": "NY is trading near London's upper range edge.",
+        "timestamp": "2026-01-14T15:10:00Z",
+        "vwap": 1.09055
+      }
+    }
+  },
+  {
+    "evaluation_timestamp": "2026-01-14T15:11:00Z",
+    "packet": {
+      "$schema": "historical_packet_v1",
+      "attached_visuals": {
+        "$schema": "attached_visuals_v1",
+        "daily_chart_attached": true,
+        "dom_snapshot_attached": true,
+        "execution_chart_attached": true,
+        "footprint_chart_attached": true,
+        "higher_timeframe_chart_attached": true,
+        "tpo_chart_attached": true,
+        "volume_profile_attached": true
+      },
+      "challenge_state": {
+        "$schema": "challenge_state_v1",
+        "cooldown_after_stopout_minutes": 30,
+        "current_balance": 50000.0,
+        "current_open_positions": [],
+        "daily_loss_stop_dollars": 10000.0,
+        "daily_realized_pnl": 0.0,
+        "event_lockout_minutes_after": 5,
+        "event_lockout_minutes_before": 15,
+        "last_stopout_time_by_contract": {
+          "6E": null,
+          "CL": null,
+          "ES": null,
+          "MGC": null,
+          "NQ": null,
+          "ZN": null
+        },
+        "last_trade_direction_by_contract": {
+          "6E": null,
+          "CL": null,
+          "ES": null,
+          "MGC": null,
+          "NQ": null,
+          "ZN": null
+        },
+        "max_position_size_by_contract": {
+          "6E": 4,
+          "CL": 2,
+          "ES": 2,
+          "MGC": 12,
+          "NQ": 2,
+          "ZN": 4
+        },
+        "max_risk_per_trade_dollars": 1450.0,
+        "max_trades_per_contract_per_day": 3,
+        "max_trades_per_day": 60,
+        "minimum_reward_to_risk": 1.5,
+        "profit_target_dollars": 400000.0,
+        "trades_today_all": 0,
+        "trades_today_by_contract": {
+          "6E": 0,
+          "CL": 0,
+          "ES": 0,
+          "MGC": 0,
+          "NQ": 0,
+          "ZN": 0
+        }
+      },
+      "contract_metadata": {
+        "$schema": "contract_metadata_v1",
+        "allowed_hours_end_et": "12:00",
+        "allowed_hours_start_et": "08:00",
+        "contract": "6E",
+        "dollar_per_tick": 6.25,
+        "max_position_size": 4,
+        "point_value": 125000.0,
+        "slippage_ticks": 1,
+        "tick_size": 5e-05
+      },
+      "contract_specific_extension": {
+        "$schema": "contract_specific_extension_v1",
+        "asia_high_low": {
+          "high": 1.0892,
+          "low": 1.0876
+        },
+        "contract": "6E",
+        "dxy_context": "weakening",
+        "europe_initiative_status": "Europe drove higher",
+        "london_high_low": {
+          "high": 1.0914,
+          "low": 1.0886
+        },
+        "ny_high_low_so_far": {
+          "high": 1.0916,
+          "low": 1.0898
+        }
+      },
+      "market_packet": {
+        "$schema": "market_packet_v1",
+        "avg_20d_session_range": 0.0052,
+        "contract": "6E",
+        "cross_market_context": {
+          "dxy_direction": "weakening"
+        },
+        "cumulative_delta": 1260.0,
+        "current_price": 1.0912,
+        "current_session_poc": 1.09065,
+        "current_session_vah": 1.0914,
+        "current_session_val": 1.0899,
+        "current_volume_vs_average": 0.96,
+        "data_quality_flags": [],
+        "event_calendar_remainder": [
+          {
+            "event_state": "upcoming",
+            "minutes_until": 115,
+            "name": "ECB Speaker",
+            "tier": 2,
+            "time": "2026-01-14T16:00:00Z"
+          }
+        ],
+        "key_hvns": [
+          1.09065,
+          1.08895
+        ],
+        "key_lvns": [
+          1.0918
+        ],
+        "major_higher_timeframe_levels": [
+          1.093,
+          1.086
+        ],
+        "opening_type": "Open-Auction",
+        "overnight_high": 1.0908,
+        "overnight_low": 1.0881,
+        "previous_session_poc": 1.08895,
+        "previous_session_vah": 1.0897,
+        "previous_session_val": 1.0882,
+        "prior_day_close": 1.0889,
+        "prior_day_high": 1.0921,
+        "prior_day_low": 1.0864,
+        "session_open": 1.0895,
+        "session_range": 0.00215,
+        "session_type": "RTH",
+        "singles_excess_poor_high_low_notes": "NY is trading near London's upper range edge.",
+        "timestamp": "2026-01-14T15:11:00Z",
+        "vwap": 1.09055
+      }
+    }
+  },
+  {
+    "evaluation_timestamp": "2026-01-14T15:12:00Z",
+    "packet": {
+      "$schema": "historical_packet_v1",
+      "attached_visuals": {
+        "$schema": "attached_visuals_v1",
+        "daily_chart_attached": true,
+        "dom_snapshot_attached": true,
+        "execution_chart_attached": true,
+        "footprint_chart_attached": true,
+        "higher_timeframe_chart_attached": true,
+        "tpo_chart_attached": true,
+        "volume_profile_attached": true
+      },
+      "challenge_state": {
+        "$schema": "challenge_state_v1",
+        "cooldown_after_stopout_minutes": 30,
+        "current_balance": 50000.0,
+        "current_open_positions": [],
+        "daily_loss_stop_dollars": 10000.0,
+        "daily_realized_pnl": 0.0,
+        "event_lockout_minutes_after": 5,
+        "event_lockout_minutes_before": 15,
+        "last_stopout_time_by_contract": {
+          "6E": null,
+          "CL": null,
+          "ES": null,
+          "MGC": null,
+          "NQ": null,
+          "ZN": null
+        },
+        "last_trade_direction_by_contract": {
+          "6E": null,
+          "CL": null,
+          "ES": null,
+          "MGC": null,
+          "NQ": null,
+          "ZN": null
+        },
+        "max_position_size_by_contract": {
+          "6E": 4,
+          "CL": 2,
+          "ES": 2,
+          "MGC": 12,
+          "NQ": 2,
+          "ZN": 4
+        },
+        "max_risk_per_trade_dollars": 1450.0,
+        "max_trades_per_contract_per_day": 3,
+        "max_trades_per_day": 60,
+        "minimum_reward_to_risk": 1.5,
+        "profit_target_dollars": 400000.0,
+        "trades_today_all": 0,
+        "trades_today_by_contract": {
+          "6E": 0,
+          "CL": 0,
+          "ES": 0,
+          "MGC": 0,
+          "NQ": 0,
+          "ZN": 0
+        }
+      },
+      "contract_metadata": {
+        "$schema": "contract_metadata_v1",
+        "allowed_hours_end_et": "12:00",
+        "allowed_hours_start_et": "08:00",
+        "contract": "6E",
+        "dollar_per_tick": 6.25,
+        "max_position_size": 4,
+        "point_value": 125000.0,
+        "slippage_ticks": 1,
+        "tick_size": 5e-05
+      },
+      "contract_specific_extension": {
+        "$schema": "contract_specific_extension_v1",
+        "asia_high_low": {
+          "high": 1.0892,
+          "low": 1.0876
+        },
+        "contract": "6E",
+        "dxy_context": "weakening",
+        "europe_initiative_status": "Europe drove higher",
+        "london_high_low": {
+          "high": 1.0914,
+          "low": 1.0886
+        },
+        "ny_high_low_so_far": {
+          "high": 1.0916,
+          "low": 1.0898
+        }
+      },
+      "market_packet": {
+        "$schema": "market_packet_v1",
+        "avg_20d_session_range": 0.0052,
+        "contract": "6E",
+        "cross_market_context": {
+          "dxy_direction": "weakening"
+        },
+        "cumulative_delta": 1260.0,
+        "current_price": 1.0914,
+        "current_session_poc": 1.09065,
+        "current_session_vah": 1.09135,
+        "current_session_val": 1.0899,
+        "current_volume_vs_average": 0.96,
+        "data_quality_flags": [],
+        "event_calendar_remainder": [
+          {
+            "event_state": "upcoming",
+            "minutes_until": 115,
+            "name": "ECB Speaker",
+            "tier": 2,
+            "time": "2026-01-14T16:00:00Z"
+          }
+        ],
+        "key_hvns": [
+          1.09065,
+          1.08895
+        ],
+        "key_lvns": [
+          1.0918
+        ],
+        "major_higher_timeframe_levels": [
+          1.093,
+          1.086
+        ],
+        "opening_type": "Open-Auction",
+        "overnight_high": 1.0908,
+        "overnight_low": 1.0881,
+        "previous_session_poc": 1.08895,
+        "previous_session_vah": 1.0897,
+        "previous_session_val": 1.0882,
+        "prior_day_close": 1.0889,
+        "prior_day_high": 1.0921,
+        "prior_day_low": 1.0864,
+        "session_open": 1.0895,
+        "session_range": 0.00215,
+        "session_type": "RTH",
+        "singles_excess_poor_high_low_notes": "NY is trading near London's upper range edge.",
+        "timestamp": "2026-01-14T15:12:00Z",
+        "vwap": 1.09055
+      }
+    }
+  }
+]

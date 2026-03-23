@@ -1,0 +1,832 @@
+{
+  "$schema": "readiness_v2_bootstrap_artifact_v1",
+  "briefing": {
+    "$schema": "premarket_briefing_v1",
+    "briefing_id": "6e-briefing-20260114t140500z",
+    "candidate_trigger_summaries": [
+      {
+        "family": "price_level_touch",
+        "label": "Touch current session vah",
+        "price_level": 1.0914,
+        "provenance": [
+          {
+            "detail": "The trigger level comes directly from the selected structural level on the packet.",
+            "kind": "field",
+            "observed_at": "2026-01-14T14:05:00Z",
+            "provenance_id": "trigger_level",
+            "source_path": "market_packet.current_session_vah",
+            "value": "1.0914"
+          },
+          {
+            "detail": "Directional lean determines which side of value can unlock reanalysis.",
+            "kind": "derived_condition",
+            "observed_at": "2026-01-14T14:05:00Z",
+            "provenance_id": "directional_lean",
+            "source_path": "derived.directional_lean",
+            "value": "BULLISH"
+          }
+        ],
+        "recheck_at_time": null,
+        "summary": "Escalate only if 6E tags 1.0914, the next structural level in the current bullish framing.",
+        "supporting_claim_ids": [
+          "value_support_or_resistance",
+          "flow_alignment"
+        ],
+        "unlock_action": "ROUTE_STAGE_AB_REANALYSIS"
+      },
+      {
+        "family": "recheck_at_time",
+        "label": "Timed recheck",
+        "price_level": null,
+        "provenance": [
+          {
+            "detail": "The timed recheck is deterministically resolved from the creation time and briefing expiry.",
+            "kind": "field",
+            "observed_at": "2026-01-14T14:05:00Z",
+            "provenance_id": "recheck_at_time",
+            "source_path": "derived.recheck_at_time",
+            "value": "2026-01-14T14:20:00Z"
+          },
+          {
+            "detail": "The timed recheck remains bounded by the briefing expiry.",
+            "kind": "field",
+            "observed_at": "2026-01-14T14:05:00Z",
+            "provenance_id": "expires_at",
+            "source_path": "derived.briefing_expires_at",
+            "value": "2026-01-14T20:05:00Z"
+          }
+        ],
+        "recheck_at_time": "2026-01-14T14:20:00Z",
+        "summary": "Re-evaluate the watch at 2026-01-14T14:20:00+00:00 if the price trigger remains unobserved.",
+        "supporting_claim_ids": [
+          "value_support_or_resistance"
+        ],
+        "unlock_action": "ROUTE_STAGE_AB_REANALYSIS"
+      }
+    ],
+    "contract": "6E",
+    "created_at": "2026-01-14T14:05:00Z",
+    "expires_at": "2026-01-14T20:05:00Z",
+    "feature_snapshot": {
+      "asia_high_low": {
+        "high": 1.0892,
+        "low": 1.0876
+      },
+      "cross_market_context": "dxy direction weakening",
+      "cumulative_delta": 1260.0,
+      "current_price": 1.09115,
+      "current_session_poc": 1.09065,
+      "current_session_vah": 1.0914,
+      "current_session_val": 1.0899,
+      "current_volume_vs_average": 0.96,
+      "directional_lean": "BULLISH",
+      "dxy_context": "weakening",
+      "europe_initiative_status": "Europe drove higher",
+      "london_high_low": {
+        "high": 1.0914,
+        "low": 1.0886
+      },
+      "ny_high_low_so_far": {
+        "high": 1.0916,
+        "low": 1.0898
+      },
+      "opening_type": "Open-Auction",
+      "price_location_vs_value": "INSIDE_VALUE",
+      "price_location_vs_vwap": "ABOVE",
+      "prior_day_high": 1.0921,
+      "prior_day_low": 1.0864,
+      "session_open": 1.0895,
+      "session_range_ratio": 0.4134615384615385,
+      "vwap": 1.09055
+    },
+    "invalidation_conditions": [
+      {
+        "comparison": "LESS_THAN_OR_EQUAL",
+        "description": "A break below developing VAL 1.0899 invalidates the bullish or balanced watch framing.",
+        "effective_at": null,
+        "flag": null,
+        "kind": "PRICE_BREACH",
+        "price_level": 1.0899,
+        "provenance": [
+          {
+            "detail": "The invalidation level is taken directly from the developing value boundary.",
+            "kind": "field",
+            "observed_at": "2026-01-14T14:05:00Z",
+            "provenance_id": "price_level",
+            "source_path": "market_packet.current_session_val",
+            "value": "1.0899"
+          },
+          {
+            "detail": "The comparison direction is selected from the deterministic directional lean.",
+            "kind": "derived_condition",
+            "observed_at": "2026-01-14T14:05:00Z",
+            "provenance_id": "comparison",
+            "source_path": "derived.invalidation_comparison",
+            "value": "LESS_THAN_OR_EQUAL"
+          }
+        ],
+        "rule_id": "price_structure_break"
+      }
+    ],
+    "lockout_conditions": [
+      {
+        "begins_at": "2026-01-14T17:00:00Z",
+        "condition_id": "session_end_lockout",
+        "description": "The watch hard-stops at the 6E allowed-hours close.",
+        "ends_at": null,
+        "kind": "SESSION_LOCKOUT",
+        "provenance": [
+          {
+            "detail": "The session close lockout is anchored to the contract allowed-hours end.",
+            "kind": "field",
+            "observed_at": "2026-01-14T14:05:00Z",
+            "provenance_id": "allowed_hours_end_et",
+            "source_path": "contract_metadata.allowed_hours_end_et",
+            "value": "12:00"
+          },
+          {
+            "detail": "The ET session close is converted into the deterministic UTC lockout timestamp.",
+            "kind": "field",
+            "observed_at": "2026-01-14T14:05:00Z",
+            "provenance_id": "session_end_time",
+            "source_path": "derived.session_end_time",
+            "value": "2026-01-14T17:00:00Z"
+          }
+        ],
+        "reason_code": "session_close"
+      },
+      {
+        "begins_at": "2026-01-14T15:45:00Z",
+        "condition_id": "next_event_lockout",
+        "description": "ECB Speaker activates a deterministic event lockout window around the scheduled release.",
+        "ends_at": "2026-01-14T16:05:00Z",
+        "kind": "EVENT_LOCKOUT",
+        "provenance": [
+          {
+            "detail": "The next event name anchors the event lockout description.",
+            "kind": "field",
+            "observed_at": "2026-01-14T14:05:00Z",
+            "provenance_id": "next_event_name",
+            "source_path": "market_packet.event_calendar_remainder[0].name",
+            "value": "ECB Speaker"
+          },
+          {
+            "detail": "The lockout start is derived from the event time and the pre-event lockout minutes.",
+            "kind": "field",
+            "observed_at": "2026-01-14T14:05:00Z",
+            "provenance_id": "begins_at",
+            "source_path": "derived.event_lockout_window.begin",
+            "value": "2026-01-14T15:45:00Z"
+          },
+          {
+            "detail": "The lockout end is derived from the event time and the post-event lockout minutes.",
+            "kind": "field",
+            "observed_at": "2026-01-14T14:05:00Z",
+            "provenance_id": "ends_at",
+            "source_path": "derived.event_lockout_window.end",
+            "value": "2026-01-14T16:05:00Z"
+          }
+        ],
+        "reason_code": "ecb_speaker"
+      }
+    ],
+    "monitor_posture": "MONITOR",
+    "narrative_feature_thesis": "6E is holding above VWAP 1.09055 while Europe drove higher, keeping London high 1.0914 and prior-day high 1.0921 in play. DXY is 'weakening' and cross-market context is 'dxy direction weakening', which frames whether Europe initiative 'Europe drove higher' can continue. The next scheduled event is ECB Speaker at 2026-01-14T16:00:00+00:00, which can hard-stop the 6E watch as the lockout window approaches.",
+    "narrative_feature_thesis_claim_ids": [
+      "value_support_or_resistance",
+      "macro_context",
+      "event_risk_window"
+    ],
+    "packet_timestamp": "2026-01-14T14:05:00Z",
+    "session_snapshot": {
+      "data_quality_flags": [],
+      "evaluation_timestamp": "2026-01-14T14:05:00Z",
+      "event_lockout_active": false,
+      "freshness_state": "FRESH",
+      "governance_lockout_active": false,
+      "minutes_until_next_event": 115,
+      "next_event_name": "ECB Speaker",
+      "next_event_time": "2026-01-14T16:00:00Z",
+      "packet_age_seconds": 0,
+      "packet_timestamp": "2026-01-14T14:05:00Z",
+      "session_access_state": "INSIDE_ALLOWED_HOURS",
+      "session_type": "RTH"
+    },
+    "source_packet_ref": "historical_packet:6E:2026-01-14T14:05:00+00:00",
+    "thesis_claims": [
+      {
+        "category": "structure",
+        "claim_id": "value_support_or_resistance",
+        "evidence_fields": [
+          "market_packet.current_price",
+          "market_packet.vwap",
+          "market_packet.current_session_vah",
+          "market_packet.current_session_val",
+          "contract_specific_extension.london_high_low.high",
+          "contract_specific_extension.london_high_low.low"
+        ],
+        "provenance": [
+          {
+            "detail": "Current 6E price anchors the value-context portion of the thesis.",
+            "kind": "field",
+            "observed_at": "2026-01-14T14:05:00Z",
+            "provenance_id": "current_price",
+            "source_path": "market_packet.current_price",
+            "value": "1.09115"
+          },
+          {
+            "detail": "VWAP anchors the directional structure reference.",
+            "kind": "field",
+            "observed_at": "2026-01-14T14:05:00Z",
+            "provenance_id": "vwap",
+            "source_path": "market_packet.vwap",
+            "value": "1.09055"
+          },
+          {
+            "detail": "London high anchors the Europe-session structure reference.",
+            "kind": "field",
+            "observed_at": "2026-01-14T14:05:00Z",
+            "provenance_id": "london_high",
+            "source_path": "contract_specific_extension.london_high_low.high",
+            "value": "1.0914"
+          },
+          {
+            "detail": "London low anchors the Europe-session downside structure reference.",
+            "kind": "field",
+            "observed_at": "2026-01-14T14:05:00Z",
+            "provenance_id": "london_low",
+            "source_path": "contract_specific_extension.london_high_low.low",
+            "value": "1.0886"
+          },
+          {
+            "detail": "Directional lean is derived from price vs session open, VWAP, and cumulative delta.",
+            "kind": "derived_condition",
+            "observed_at": "2026-01-14T14:05:00Z",
+            "provenance_id": "directional_lean",
+            "source_path": "derived.directional_lean",
+            "value": "BULLISH"
+          }
+        ],
+        "statement": "6E is holding above VWAP 1.09055 while Europe drove higher, keeping London high 1.0914 and prior-day high 1.0921 in play."
+      },
+      {
+        "category": "flow",
+        "claim_id": "flow_alignment",
+        "evidence_fields": [
+          "contract_specific_extension.europe_initiative_status",
+          "contract_specific_extension.asia_high_low",
+          "contract_specific_extension.ny_high_low_so_far",
+          "market_packet.cumulative_delta",
+          "market_packet.current_volume_vs_average"
+        ],
+        "provenance": [
+          {
+            "detail": "Europe initiative posture anchors the operator-facing flow statement.",
+            "kind": "field",
+            "observed_at": "2026-01-14T14:05:00Z",
+            "provenance_id": "europe_initiative_status",
+            "source_path": "contract_specific_extension.europe_initiative_status",
+            "value": "Europe drove higher"
+          },
+          {
+            "detail": "Asia range anchors the overnight context.",
+            "kind": "field",
+            "observed_at": "2026-01-14T14:05:00Z",
+            "provenance_id": "asia_high_low",
+            "source_path": "contract_specific_extension.asia_high_low",
+            "value": "1.0876-1.0892"
+          },
+          {
+            "detail": "NY range so far anchors whether the local session is extending or compressing.",
+            "kind": "field",
+            "observed_at": "2026-01-14T14:05:00Z",
+            "provenance_id": "ny_high_low_so_far",
+            "source_path": "contract_specific_extension.ny_high_low_so_far",
+            "value": "1.0898-1.0916"
+          },
+          {
+            "detail": "Cumulative delta anchors whether current participation supports the Europe-led move.",
+            "kind": "field",
+            "observed_at": "2026-01-14T14:05:00Z",
+            "provenance_id": "cumulative_delta",
+            "source_path": "market_packet.cumulative_delta",
+            "value": "1260"
+          },
+          {
+            "detail": "Relative volume anchors whether the move is developing with typical participation.",
+            "kind": "field",
+            "observed_at": "2026-01-14T14:05:00Z",
+            "provenance_id": "current_volume_vs_average",
+            "source_path": "market_packet.current_volume_vs_average",
+            "value": "0.96"
+          }
+        ],
+        "statement": "Europe drove higher. Asia range was 1.0876-1.0892 and NY range so far is 1.0898-1.0916. Cumulative delta is 1260 and volume is 0.96x average."
+      },
+      {
+        "category": "risk",
+        "claim_id": "macro_context",
+        "evidence_fields": [
+          "contract_specific_extension.dxy_context",
+          "market_packet.cross_market_context",
+          "contract_specific_extension.europe_initiative_status"
+        ],
+        "provenance": [
+          {
+            "detail": "DXY posture anchors the FX macro-headwind reference.",
+            "kind": "field",
+            "observed_at": "2026-01-14T14:05:00Z",
+            "provenance_id": "dxy_context",
+            "source_path": "contract_specific_extension.dxy_context",
+            "value": "weakening"
+          },
+          {
+            "detail": "Cross-market context anchors the macro-support or headwind reference.",
+            "kind": "field",
+            "observed_at": "2026-01-14T14:05:00Z",
+            "provenance_id": "cross_market_context",
+            "source_path": "market_packet.cross_market_context",
+            "value": "dxy direction weakening"
+          },
+          {
+            "detail": "Europe initiative posture links the macro context back to the session narrative.",
+            "kind": "field",
+            "observed_at": "2026-01-14T14:05:00Z",
+            "provenance_id": "europe_initiative_status",
+            "source_path": "contract_specific_extension.europe_initiative_status",
+            "value": "Europe drove higher"
+          }
+        ],
+        "statement": "DXY is 'weakening' and cross-market context is 'dxy direction weakening', which frames whether Europe initiative 'Europe drove higher' can continue."
+      },
+      {
+        "category": "risk",
+        "claim_id": "event_risk_window",
+        "evidence_fields": [
+          "market_packet.event_calendar_remainder",
+          "challenge_state.event_lockout_minutes_before",
+          "challenge_state.event_lockout_minutes_after"
+        ],
+        "provenance": [
+          {
+            "detail": "The next event name anchors the deterministic event-risk statement.",
+            "kind": "field",
+            "observed_at": "2026-01-14T14:05:00Z",
+            "provenance_id": "next_event_name",
+            "source_path": "market_packet.event_calendar_remainder[0].name",
+            "value": "ECB Speaker"
+          },
+          {
+            "detail": "The next event time anchors the deterministic lockout window reference.",
+            "kind": "field",
+            "observed_at": "2026-01-14T14:05:00Z",
+            "provenance_id": "next_event_time",
+            "source_path": "market_packet.event_calendar_remainder[0].time",
+            "value": "2026-01-14T16:00:00Z"
+          }
+        ],
+        "statement": "The next scheduled event is ECB Speaker at 2026-01-14T16:00:00+00:00, which can hard-stop the 6E watch as the lockout window approaches."
+      }
+    ]
+  },
+  "contract": "6E",
+  "evaluation_timestamp": "2026-01-14T14:05:00Z",
+  "mode": "bootstrap",
+  "query_triggers": [
+    {
+      "$schema": "query_trigger_v1",
+      "contract": "6E",
+      "created_at": "2026-01-14T14:05:00Z",
+      "deterministic_parameters": {
+        "buffer_ticks": 0,
+        "family": "price_level_touch",
+        "price_level": 1.0914,
+        "recheck_at_time": null
+      },
+      "expiry_policy": {
+        "expires_at": "2026-01-14T20:05:00Z",
+        "reason": "expires_with_briefing_window"
+      },
+      "family": "price_level_touch",
+      "invalidation_policy": [
+        {
+          "comparison": "LESS_THAN_OR_EQUAL",
+          "description": "A break below developing VAL 1.0899 invalidates the bullish or balanced watch framing.",
+          "effective_at": null,
+          "flag": null,
+          "kind": "PRICE_BREACH",
+          "price_level": 1.0899,
+          "provenance": [
+            {
+              "detail": "The invalidation level is taken directly from the developing value boundary.",
+              "kind": "field",
+              "observed_at": "2026-01-14T14:05:00Z",
+              "provenance_id": "price_level",
+              "source_path": "market_packet.current_session_val",
+              "value": "1.0899"
+            },
+            {
+              "detail": "The comparison direction is selected from the deterministic directional lean.",
+              "kind": "derived_condition",
+              "observed_at": "2026-01-14T14:05:00Z",
+              "provenance_id": "comparison",
+              "source_path": "derived.invalidation_comparison",
+              "value": "LESS_THAN_OR_EQUAL"
+            }
+          ],
+          "rule_id": "price_structure_break"
+        }
+      ],
+      "label": "Touch current session vah",
+      "mode": "deterministic",
+      "operator_claims": [
+        {
+          "category": "trigger",
+          "claim_id": "trigger_touch_level",
+          "evidence_fields": [
+            "feature_snapshot.current_session_vah",
+            "feature_snapshot.directional_lean"
+          ],
+          "provenance": [
+            {
+              "detail": "The trigger level comes directly from the selected structural level.",
+              "kind": "field",
+              "observed_at": "2026-01-14T14:05:00Z",
+              "provenance_id": "trigger_level",
+              "source_path": "market_packet.current_session_vah",
+              "value": "1.0914"
+            },
+            {
+              "detail": "Directional lean determines that a price-touch trigger can unlock reanalysis.",
+              "kind": "derived_condition",
+              "observed_at": "2026-01-14T14:05:00Z",
+              "provenance_id": "directional_lean",
+              "source_path": "derived.directional_lean",
+              "value": "BULLISH"
+            }
+          ],
+          "statement": "Escalate for fresh Stage A+B reanalysis if 6E tags 1.0914 at current session vah."
+        },
+        {
+          "category": "invalidation",
+          "claim_id": "trigger_invalidation_guard",
+          "evidence_fields": [
+            "invalidation_policy.price_level",
+            "invalidation_policy.comparison"
+          ],
+          "provenance": [
+            {
+              "detail": "The invalidation level is taken directly from the developing value boundary.",
+              "kind": "field",
+              "observed_at": "2026-01-14T14:05:00Z",
+              "provenance_id": "price_level",
+              "source_path": "market_packet.current_session_val",
+              "value": "1.0899"
+            },
+            {
+              "detail": "The comparison direction is selected from the deterministic directional lean.",
+              "kind": "derived_condition",
+              "observed_at": "2026-01-14T14:05:00Z",
+              "provenance_id": "comparison",
+              "source_path": "derived.invalidation_comparison",
+              "value": "LESS_THAN_OR_EQUAL"
+            }
+          ],
+          "statement": "Keep the trigger active only while price holds above developing VAL 1.0899."
+        }
+      ],
+      "operator_explanation": "Escalate for fresh Stage A+B reanalysis if 6E tags 1.0914 at current session vah. Keep the trigger active only while price holds above developing VAL 1.0899.",
+      "operator_explanation_claim_ids": [
+        "trigger_touch_level",
+        "trigger_invalidation_guard"
+      ],
+      "post_trigger_policy": "STRUCTURE_CONFIRMATION_REQUIRED",
+      "source_briefing_id": "6e-briefing-20260114t140500z",
+      "supporting_claim_ids": [
+        "value_support_or_resistance",
+        "flow_alignment"
+      ],
+      "trigger_id": "6e-trigger-current_session_vah-20260114t140500z",
+      "unlock_action": "ROUTE_STAGE_AB_REANALYSIS",
+      "validation_status": "EXECUTABLE"
+    },
+    {
+      "$schema": "query_trigger_v1",
+      "contract": "6E",
+      "created_at": "2026-01-14T14:05:00Z",
+      "deterministic_parameters": {
+        "buffer_ticks": null,
+        "family": "recheck_at_time",
+        "price_level": null,
+        "recheck_at_time": "2026-01-14T14:20:00Z"
+      },
+      "expiry_policy": {
+        "expires_at": "2026-01-14T20:05:00Z",
+        "reason": "expires_with_briefing_window"
+      },
+      "family": "recheck_at_time",
+      "invalidation_policy": [
+        {
+          "comparison": "LESS_THAN_OR_EQUAL",
+          "description": "A break below developing VAL 1.0899 invalidates the bullish or balanced watch framing.",
+          "effective_at": null,
+          "flag": null,
+          "kind": "PRICE_BREACH",
+          "price_level": 1.0899,
+          "provenance": [
+            {
+              "detail": "The invalidation level is taken directly from the developing value boundary.",
+              "kind": "field",
+              "observed_at": "2026-01-14T14:05:00Z",
+              "provenance_id": "price_level",
+              "source_path": "market_packet.current_session_val",
+              "value": "1.0899"
+            },
+            {
+              "detail": "The comparison direction is selected from the deterministic directional lean.",
+              "kind": "derived_condition",
+              "observed_at": "2026-01-14T14:05:00Z",
+              "provenance_id": "comparison",
+              "source_path": "derived.invalidation_comparison",
+              "value": "LESS_THAN_OR_EQUAL"
+            }
+          ],
+          "rule_id": "price_structure_break"
+        }
+      ],
+      "label": "Timed recheck",
+      "mode": "deterministic",
+      "operator_claims": [
+        {
+          "category": "trigger",
+          "claim_id": "timed_recheck_window",
+          "evidence_fields": [
+            "deterministic_parameters.recheck_at_time",
+            "expiry_policy.expires_at"
+          ],
+          "provenance": [
+            {
+              "detail": "The recheck time is deterministically resolved from the briefing creation time and expiry.",
+              "kind": "field",
+              "observed_at": "2026-01-14T14:05:00Z",
+              "provenance_id": "recheck_at_time",
+              "source_path": "derived.recheck_at_time",
+              "value": "2026-01-14T14:20:00Z"
+            },
+            {
+              "detail": "The bounded recheck remains inside the briefing expiry window.",
+              "kind": "field",
+              "observed_at": "2026-01-14T14:05:00Z",
+              "provenance_id": "expires_at",
+              "source_path": "briefing.expires_at",
+              "value": "2026-01-14T20:05:00Z"
+            }
+          ],
+          "statement": "Force a bounded recheck at 2026-01-14T14:20:00+00:00 if the price trigger does not fire first."
+        }
+      ],
+      "operator_explanation": "Force a bounded recheck at 2026-01-14T14:20:00+00:00 if the price trigger does not fire first.",
+      "operator_explanation_claim_ids": [
+        "timed_recheck_window"
+      ],
+      "post_trigger_policy": "DIRECT_REANALYSIS",
+      "source_briefing_id": "6e-briefing-20260114t140500z",
+      "supporting_claim_ids": [
+        "value_support_or_resistance"
+      ],
+      "trigger_id": "6e-trigger-recheck-20260114t140500z",
+      "unlock_action": "ROUTE_STAGE_AB_REANALYSIS",
+      "validation_status": "EXECUTABLE"
+    }
+  ],
+  "watch": {
+    "$schema": "readiness_watch_v1",
+    "active_trigger_family": "price_level_touch",
+    "allowed_next_actions": [
+      "EVALUATE_TRIGGER",
+      "DISARM_WATCH"
+    ],
+    "context_snapshot": {
+      "active_data_quality_flags": [],
+      "asia_high_low": {
+        "high": 1.0892,
+        "low": 1.0876
+      },
+      "contamination_reasons": [],
+      "cross_market_context": "dxy direction weakening",
+      "current_price": 1.09115,
+      "directional_lean": "BULLISH",
+      "dxy_context": "weakening",
+      "europe_initiative_status": "Europe drove higher",
+      "evaluation_timestamp": "2026-01-14T14:05:00Z",
+      "event_lockout_active": false,
+      "event_risk_state": "CLEAR",
+      "freshness_state": "FRESH",
+      "governance_lockout_active": false,
+      "lockout_reasons": [],
+      "london_high_low": {
+        "high": 1.0914,
+        "low": 1.0886
+      },
+      "minutes_until_next_event": 115,
+      "next_event_name": "ECB Speaker",
+      "next_event_time": "2026-01-14T16:00:00Z",
+      "ny_high_low_so_far": {
+        "high": 1.0916,
+        "low": 1.0898
+      },
+      "packet_age_seconds": 0,
+      "packet_timestamp": "2026-01-14T14:05:00Z",
+      "session_access_state": "INSIDE_ALLOWED_HOURS",
+      "value_location_state": "INSIDE_VALUE"
+    },
+    "contract": "6E",
+    "created_at": "2026-01-14T14:05:00Z",
+    "detected_changes": [],
+    "expiry_policy": {
+      "expires_at": "2026-01-14T20:05:00Z",
+      "reason": "expires_with_briefing_window"
+    },
+    "history": [
+      {
+        "change_summary": "Initialized watch at revision 1 in ARMED_WAITING with WAIT.",
+        "detected_change_kinds": [],
+        "evaluated_at": "2026-01-14T14:05:00Z",
+        "packet_timestamp": "2026-01-14T14:05:00Z",
+        "prior_revision": null,
+        "prior_watch_id": null,
+        "revision": 1,
+        "routing_recommendation": "WAIT",
+        "state": "ARMED_WAITING",
+        "terminal_reason": null,
+        "transition_reason": "initialized",
+        "trigger_truth_state": "NOT_OBSERVED"
+      }
+    ],
+    "invalidation_rules": [
+      {
+        "comparison": "LESS_THAN_OR_EQUAL",
+        "description": "A break below developing VAL 1.0899 invalidates the bullish or balanced watch framing.",
+        "effective_at": null,
+        "flag": null,
+        "kind": "PRICE_BREACH",
+        "price_level": 1.0899,
+        "provenance": [
+          {
+            "detail": "The invalidation level is taken directly from the developing value boundary.",
+            "kind": "field",
+            "observed_at": "2026-01-14T14:05:00Z",
+            "provenance_id": "price_level",
+            "source_path": "market_packet.current_session_val",
+            "value": "1.0899"
+          },
+          {
+            "detail": "The comparison direction is selected from the deterministic directional lean.",
+            "kind": "derived_condition",
+            "observed_at": "2026-01-14T14:05:00Z",
+            "provenance_id": "comparison",
+            "source_path": "derived.invalidation_comparison",
+            "value": "LESS_THAN_OR_EQUAL"
+          }
+        ],
+        "rule_id": "price_structure_break"
+      }
+    ],
+    "last_evaluated_at": "2026-01-14T14:05:00Z",
+    "last_observation": {
+      "context_change": "ARMED_WAITING",
+      "note": "Watch armed on price_level_touch.",
+      "observed_at": "2026-01-14T14:05:00Z",
+      "trigger_truth_state": "NOT_OBSERVED"
+    },
+    "operator_claims": [
+      {
+        "category": "state",
+        "claim_id": "watch_state_reason",
+        "evidence_fields": [
+          "context_snapshot.current_price",
+          "context_snapshot.value_location_state",
+          "trigger_payload.family"
+        ],
+        "provenance": [
+          {
+            "detail": "The watch state is the deterministic lifecycle output at the current evaluation time.",
+            "kind": "derived_condition",
+            "observed_at": "2026-01-14T14:05:00Z",
+            "provenance_id": "watch_state",
+            "source_path": "derived.watch_state",
+            "value": "ARMED_WAITING"
+          },
+          {
+            "detail": "Current price anchors the operator-facing watch state summary.",
+            "kind": "field",
+            "observed_at": "2026-01-14T14:05:00Z",
+            "provenance_id": "current_price",
+            "source_path": "context_snapshot.current_price",
+            "value": "1.09115"
+          },
+          {
+            "detail": "The active price-touch level anchors the watch monitoring statement.",
+            "kind": "field",
+            "observed_at": "2026-01-14T14:05:00Z",
+            "provenance_id": "trigger_price_level",
+            "source_path": "trigger_payload.price_level",
+            "value": "1.0914"
+          },
+          {
+            "detail": "Value location anchors the current or changed value-context reference.",
+            "kind": "field",
+            "observed_at": "2026-01-14T14:05:00Z",
+            "provenance_id": "value_location_state",
+            "source_path": "context_snapshot.value_location_state",
+            "value": "INSIDE_VALUE"
+          },
+          {
+            "detail": "Trigger truth state anchors whether the watch is still waiting or observed.",
+            "kind": "derived_condition",
+            "observed_at": "2026-01-14T14:05:00Z",
+            "provenance_id": "trigger_truth_state",
+            "source_path": "derived.trigger_truth_state",
+            "value": "NOT_OBSERVED"
+          }
+        ],
+        "statement": "6E watch is armed_waiting with price-touch monitoring at 1.0914 while current price is 1.09115 and value remains inside_value."
+      },
+      {
+        "category": "routing",
+        "claim_id": "watch_routing_reason",
+        "evidence_fields": [
+          "routing_recommendation",
+          "context_snapshot.freshness_state",
+          "context_snapshot.session_access_state"
+        ],
+        "provenance": [
+          {
+            "detail": "Routing recommendation is the deterministic operator action output.",
+            "kind": "derived_condition",
+            "observed_at": "2026-01-14T14:05:00Z",
+            "provenance_id": "routing_recommendation",
+            "source_path": "derived.routing_recommendation",
+            "value": "WAIT"
+          },
+          {
+            "detail": "Trigger truth state informs whether the operator must keep waiting or requery Stage B.",
+            "kind": "derived_condition",
+            "observed_at": "2026-01-14T14:05:00Z",
+            "provenance_id": "trigger_truth_state",
+            "source_path": "derived.trigger_truth_state",
+            "value": "NOT_OBSERVED"
+          },
+          {
+            "detail": "Freshness state constrains whether waiting is a contamination hold or a clean watch state.",
+            "kind": "field",
+            "observed_at": "2026-01-14T14:05:00Z",
+            "provenance_id": "freshness_state",
+            "source_path": "context_snapshot.freshness_state",
+            "value": "FRESH"
+          },
+          {
+            "detail": "Session access state constrains whether waiting is a lockout hold.",
+            "kind": "field",
+            "observed_at": "2026-01-14T14:05:00Z",
+            "provenance_id": "session_access_state",
+            "source_path": "context_snapshot.session_access_state",
+            "value": "INSIDE_ALLOWED_HOURS"
+          }
+        ],
+        "statement": "Keep the operator in WAIT because the watch has not yet unlocked deterministic reanalysis."
+      }
+    ],
+    "operator_summary": "6E watch is armed_waiting with price-touch monitoring at 1.0914 while current price is 1.09115 and value remains inside_value. Keep the operator in WAIT because the watch has not yet unlocked deterministic reanalysis.",
+    "operator_summary_claim_ids": [
+      "watch_state_reason",
+      "watch_routing_reason"
+    ],
+    "post_trigger_policy": "STRUCTURE_CONFIRMATION_REQUIRED",
+    "prior_revision": null,
+    "prior_watch_id": null,
+    "revision": 1,
+    "routing_recommendation": "WAIT",
+    "routing_target": "NONE",
+    "source_kind": "premarket_briefing",
+    "source_refs": {
+      "active_trigger_id": "6e-trigger-current_session_vah-20260114t140500z",
+      "briefing_id": "6e-briefing-20260114t140500z",
+      "preserved_contract_analysis_ref": null,
+      "trigger_ids": [
+        "6e-trigger-current_session_vah-20260114t140500z",
+        "6e-trigger-recheck-20260114t140500z"
+      ]
+    },
+    "state": "ARMED_WAITING",
+    "terminal_reason": null,
+    "trigger_payload": {
+      "buffer_ticks": 0,
+      "family": "price_level_touch",
+      "price_level": 1.0914,
+      "recheck_at_time": null
+    },
+    "updated_at": "2026-01-14T14:05:00Z",
+    "watch_id": "6e-watch-20260114t140500z"
+  }
+}

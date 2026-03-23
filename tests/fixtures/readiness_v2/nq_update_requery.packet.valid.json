@@ -1,0 +1,133 @@
+{
+  "$schema": "historical_packet_v1",
+  "attached_visuals": {
+    "$schema": "attached_visuals_v1",
+    "daily_chart_attached": true,
+    "dom_snapshot_attached": true,
+    "execution_chart_attached": true,
+    "footprint_chart_attached": true,
+    "higher_timeframe_chart_attached": true,
+    "tpo_chart_attached": true,
+    "volume_profile_attached": true
+  },
+  "challenge_state": {
+    "$schema": "challenge_state_v1",
+    "cooldown_after_stopout_minutes": 30,
+    "current_balance": 50000.0,
+    "current_open_positions": [],
+    "daily_loss_stop_dollars": 10000.0,
+    "daily_realized_pnl": 0.0,
+    "event_lockout_minutes_after": 5,
+    "event_lockout_minutes_before": 15,
+    "last_stopout_time_by_contract": {
+      "6E": null,
+      "CL": null,
+      "ES": null,
+      "MGC": null,
+      "NQ": null,
+      "ZN": null
+    },
+    "last_trade_direction_by_contract": {
+      "6E": null,
+      "CL": null,
+      "ES": null,
+      "MGC": null,
+      "NQ": null,
+      "ZN": null
+    },
+    "max_position_size_by_contract": {
+      "6E": 4,
+      "CL": 2,
+      "ES": 2,
+      "MGC": 12,
+      "NQ": 2,
+      "ZN": 4
+    },
+    "max_risk_per_trade_dollars": 1450.0,
+    "max_trades_per_contract_per_day": 3,
+    "max_trades_per_day": 60,
+    "minimum_reward_to_risk": 1.5,
+    "profit_target_dollars": 400000.0,
+    "trades_today_all": 0,
+    "trades_today_by_contract": {
+      "6E": 0,
+      "CL": 0,
+      "ES": 0,
+      "MGC": 0,
+      "NQ": 0,
+      "ZN": 0
+    }
+  },
+  "contract_metadata": {
+    "$schema": "contract_metadata_v1",
+    "allowed_hours_end_et": "15:45",
+    "allowed_hours_start_et": "09:30",
+    "contract": "NQ",
+    "dollar_per_tick": 5.0,
+    "max_position_size": 2,
+    "point_value": 20.0,
+    "slippage_ticks": 1,
+    "tick_size": 0.25
+  },
+  "contract_specific_extension": {
+    "$schema": "contract_specific_extension_v1",
+    "contract": "NQ",
+    "megacap_leadership_table": {
+      "AAPL": "flat",
+      "MSFT": "up",
+      "NVDA": "up"
+    },
+    "relative_strength_vs_es": 1.18
+  },
+  "market_packet": {
+    "$schema": "market_packet_v1",
+    "avg_20d_session_range": 255.0,
+    "contract": "NQ",
+    "cross_market_context": {
+      "bond_yield_direction": "rising",
+      "es_direction": "up"
+    },
+    "cumulative_delta": 8430.0,
+    "current_price": 18128.0,
+    "current_session_poc": 18094.5,
+    "current_session_vah": 18127.75,
+    "current_session_val": 18062.25,
+    "current_volume_vs_average": 1.14,
+    "data_quality_flags": [],
+    "event_calendar_remainder": [
+      {
+        "event_state": "upcoming",
+        "minutes_until": 360,
+        "name": "Megacap Earnings",
+        "tier": 2,
+        "time": "2026-01-14T21:00:00Z"
+      }
+    ],
+    "key_hvns": [
+      18094.5,
+      18012.25
+    ],
+    "key_lvns": [
+      18160.0
+    ],
+    "major_higher_timeframe_levels": [
+      18200.0,
+      18000.0
+    ],
+    "opening_type": "Open-Drive",
+    "overnight_high": 18105.5,
+    "overnight_low": 17996.0,
+    "previous_session_poc": 18012.25,
+    "previous_session_vah": 18046.0,
+    "previous_session_val": 17988.0,
+    "prior_day_close": 18024.75,
+    "prior_day_high": 18188.0,
+    "prior_day_low": 17982.0,
+    "session_open": 18055.5,
+    "session_range": 126.5,
+    "session_type": "RTH",
+    "singles_excess_poor_high_low_notes": "Acceptance above prior value area; no poor low.",
+    "timestamp": "2026-01-14T15:12:00Z",
+    "vwap": 18098.25
+  }
+}

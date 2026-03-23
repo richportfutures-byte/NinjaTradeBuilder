@@ -1,0 +1,241 @@
+{
+  "$schema": "readiness_v2_watch_update_artifact_v1",
+  "contract": "ZN",
+  "evaluation_timestamp": "2026-01-14T15:10:00Z",
+  "mode": "update",
+  "prior_watch_id": "zn-watch-20260114t150500z",
+  "watch": {
+    "$schema": "readiness_watch_v1",
+    "active_trigger_family": "price_level_touch",
+    "allowed_next_actions": [
+      "EVALUATE_TRIGGER",
+      "DISARM_WATCH"
+    ],
+    "context_snapshot": {
+      "active_data_quality_flags": [
+        "auction_proximity_risk"
+      ],
+      "auction_proximity_state": "SCHEDULED",
+      "contamination_reasons": [],
+      "current_price": 110.40625,
+      "directional_lean": "BULLISH",
+      "evaluation_timestamp": "2026-01-14T15:10:00Z",
+      "event_lockout_active": false,
+      "event_risk_state": "CLEAR",
+      "freshness_state": "FRESH",
+      "governance_lockout_active": false,
+      "lockout_reasons": [],
+      "macro_release_context": "CPI slightly soft, yields initially down then stabilized.",
+      "minutes_until_next_event": 170,
+      "next_event_name": "10Y Auction",
+      "next_event_time": "2026-01-14T18:00:00Z",
+      "packet_age_seconds": 300,
+      "packet_timestamp": "2026-01-14T15:05:00Z",
+      "session_access_state": "INSIDE_ALLOWED_HOURS",
+      "treasury_auction_schedule": "today 13:00 10Y",
+      "value_location_state": "INSIDE_VALUE"
+    },
+    "contract": "ZN",
+    "created_at": "2026-01-14T15:05:00Z",
+    "detected_changes": [],
+    "expiry_policy": {
+      "expires_at": "2026-01-14T21:05:00Z",
+      "reason": "expires_with_briefing_window"
+    },
+    "history": [
+      {
+        "change_summary": "Initialized watch at revision 1 in ARMED_WAITING with WAIT.",
+        "detected_change_kinds": [],
+        "evaluated_at": "2026-01-14T15:05:00Z",
+        "packet_timestamp": "2026-01-14T15:05:00Z",
+        "prior_revision": null,
+        "prior_watch_id": null,
+        "revision": 1,
+        "routing_recommendation": "WAIT",
+        "state": "ARMED_WAITING",
+        "terminal_reason": null,
+        "transition_reason": "initialized",
+        "trigger_truth_state": "NOT_OBSERVED"
+      },
+      {
+        "change_summary": "No material change; watch remains ARMED_WAITING with WAIT.",
+        "detected_change_kinds": [],
+        "evaluated_at": "2026-01-14T15:10:00Z",
+        "packet_timestamp": "2026-01-14T15:05:00Z",
+        "prior_revision": 1,
+        "prior_watch_id": "zn-watch-20260114t150500z",
+        "revision": 2,
+        "routing_recommendation": "WAIT",
+        "state": "ARMED_WAITING",
+        "terminal_reason": null,
+        "transition_reason": "no_material_change",
+        "trigger_truth_state": "NOT_OBSERVED"
+      }
+    ],
+    "invalidation_rules": [
+      {
+        "comparison": "LESS_THAN_OR_EQUAL",
+        "description": "A break below developing VAL 110.296875 invalidates the bullish or balanced watch framing.",
+        "effective_at": null,
+        "flag": null,
+        "kind": "PRICE_BREACH",
+        "price_level": 110.296875,
+        "provenance": [
+          {
+            "detail": "The invalidation level is taken directly from the developing value boundary.",
+            "kind": "field",
+            "observed_at": "2026-01-14T15:05:00Z",
+            "provenance_id": "price_level",
+            "source_path": "market_packet.current_session_val",
+            "value": "110.296875"
+          },
+          {
+            "detail": "The comparison direction is selected from the deterministic directional lean.",
+            "kind": "derived_condition",
+            "observed_at": "2026-01-14T15:05:00Z",
+            "provenance_id": "comparison",
+            "source_path": "derived.invalidation_comparison",
+            "value": "LESS_THAN_OR_EQUAL"
+          }
+        ],
+        "rule_id": "price_structure_break"
+      }
+    ],
+    "last_evaluated_at": "2026-01-14T15:10:00Z",
+    "last_observation": {
+      "context_change": "ARMED_WAITING",
+      "note": "The watch remains in ARMED_WAITING with trigger truth not_observed.",
+      "observed_at": "2026-01-14T15:10:00Z",
+      "trigger_truth_state": "NOT_OBSERVED"
+    },
+    "operator_claims": [
+      {
+        "category": "state",
+        "claim_id": "watch_state_reason",
+        "evidence_fields": [
+          "context_snapshot.current_price",
+          "context_snapshot.value_location_state",
+          "trigger_payload.family"
+        ],
+        "provenance": [
+          {
+            "detail": "The watch state is the deterministic lifecycle output at the current evaluation time.",
+            "kind": "derived_condition",
+            "observed_at": "2026-01-14T15:10:00Z",
+            "provenance_id": "watch_state",
+            "source_path": "derived.watch_state",
+            "value": "ARMED_WAITING"
+          },
+          {
+            "detail": "Current price anchors the operator-facing watch state summary.",
+            "kind": "field",
+            "observed_at": "2026-01-14T15:10:00Z",
+            "provenance_id": "current_price",
+            "source_path": "context_snapshot.current_price",
+            "value": "110.40625"
+          },
+          {
+            "detail": "The active price-touch level anchors the watch monitoring statement.",
+            "kind": "field",
+            "observed_at": "2026-01-14T15:10:00Z",
+            "provenance_id": "trigger_price_level",
+            "source_path": "trigger_payload.price_level",
+            "value": "110.421875"
+          },
+          {
+            "detail": "Value location anchors the current or changed value-context reference.",
+            "kind": "field",
+            "observed_at": "2026-01-14T15:10:00Z",
+            "provenance_id": "value_location_state",
+            "source_path": "context_snapshot.value_location_state",
+            "value": "INSIDE_VALUE"
+          },
+          {
+            "detail": "Trigger truth state anchors whether the watch is still waiting or observed.",
+            "kind": "derived_condition",
+            "observed_at": "2026-01-14T15:10:00Z",
+            "provenance_id": "trigger_truth_state",
+            "source_path": "derived.trigger_truth_state",
+            "value": "NOT_OBSERVED"
+          }
+        ],
+        "statement": "ZN watch is armed_waiting with price-touch monitoring at 110.421875 while current price is 110.40625 and value remains inside_value."
+      },
+      {
+        "category": "routing",
+        "claim_id": "watch_routing_reason",
+        "evidence_fields": [
+          "routing_recommendation",
+          "context_snapshot.freshness_state",
+          "context_snapshot.session_access_state"
+        ],
+        "provenance": [
+          {
+            "detail": "Routing recommendation is the deterministic operator action output.",
+            "kind": "derived_condition",
+            "observed_at": "2026-01-14T15:10:00Z",
+            "provenance_id": "routing_recommendation",
+            "source_path": "derived.routing_recommendation",
+            "value": "WAIT"
+          },
+          {
+            "detail": "Trigger truth state informs whether the operator must keep waiting or requery Stage B.",
+            "kind": "derived_condition",
+            "observed_at": "2026-01-14T15:10:00Z",
+            "provenance_id": "trigger_truth_state",
+            "source_path": "derived.trigger_truth_state",
+            "value": "NOT_OBSERVED"
+          },
+          {
+            "detail": "Freshness state constrains whether waiting is a contamination hold or a clean watch state.",
+            "kind": "field",
+            "observed_at": "2026-01-14T15:10:00Z",
+            "provenance_id": "freshness_state",
+            "source_path": "context_snapshot.freshness_state",
+            "value": "FRESH"
+          },
+          {
+            "detail": "Session access state constrains whether waiting is a lockout hold.",
+            "kind": "field",
+            "observed_at": "2026-01-14T15:10:00Z",
+            "provenance_id": "session_access_state",
+            "source_path": "context_snapshot.session_access_state",
+            "value": "INSIDE_ALLOWED_HOURS"
+          }
+        ],
+        "statement": "Keep the operator in WAIT because the watch has not yet unlocked deterministic reanalysis."
+      }
+    ],
+    "operator_summary": "ZN watch is armed_waiting with price-touch monitoring at 110.421875 while current price is 110.40625 and value remains inside_value. Keep the operator in WAIT because the watch has not yet unlocked deterministic reanalysis.",
+    "operator_summary_claim_ids": [
+      "watch_state_reason",
+      "watch_routing_reason"
+    ],
+    "post_trigger_policy": "STRUCTURE_CONFIRMATION_REQUIRED",
+    "prior_revision": 1,
+    "prior_watch_id": "zn-watch-20260114t150500z",
+    "revision": 2,
+    "routing_recommendation": "WAIT",
+    "routing_target": "NONE",
+    "source_kind": "premarket_briefing",
+    "source_refs": {
+      "active_trigger_id": "zn-trigger-current_session_vah-20260114t150500z",
+      "briefing_id": "zn-briefing-20260114t150500z",
+      "preserved_contract_analysis_ref": null,
+      "trigger_ids": [
+        "zn-trigger-current_session_vah-20260114t150500z",
+        "zn-trigger-recheck-20260114t150500z"
+      ]
+    },
+    "state": "ARMED_WAITING",
+    "terminal_reason": null,
+    "trigger_payload": {
+      "buffer_ticks": 0,
+      "family": "price_level_touch",
+      "price_level": 110.421875,
+      "recheck_at_time": null
+    },
+    "updated_at": "2026-01-14T15:10:00Z",
+    "watch_id": "zn-watch-20260114t150500z"
+  }
+}

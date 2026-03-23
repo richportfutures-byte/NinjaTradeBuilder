@@ -1,0 +1,220 @@
+{
+  "$schema": "readiness_watch_v1",
+  "active_trigger_family": "price_level_touch",
+  "allowed_next_actions": [
+    "EVALUATE_TRIGGER",
+    "DISARM_WATCH"
+  ],
+  "context_snapshot": {
+    "active_data_quality_flags": [],
+    "contamination_reasons": [],
+    "cross_market_context": "equity tone risk-on, dxy direction flat",
+    "current_price": 73.3,
+    "directional_lean": "BULLISH",
+    "dom_liquidity_summary": "Bid stack rebuilding near session VWAP.",
+    "eia_timing_context": "EIA Petroleum Status Report is scheduled for 2026-01-14T15:30:00Z in 85 minutes.",
+    "evaluation_timestamp": "2026-01-14T14:05:00Z",
+    "event_lockout_active": false,
+    "event_risk_state": "CLEAR",
+    "freshness_state": "FRESH",
+    "governance_lockout_active": false,
+    "liquidity_sweep_summary": "Sell-side sweep below the overnight low failed to continue.",
+    "lockout_reasons": [],
+    "minutes_until_next_event": 85,
+    "next_event_name": "EIA Petroleum Status Report",
+    "next_event_time": "2026-01-14T15:30:00Z",
+    "packet_age_seconds": 0,
+    "packet_timestamp": "2026-01-14T14:05:00Z",
+    "realized_volatility_context": "normal",
+    "session_access_state": "INSIDE_ALLOWED_HOURS",
+    "value_location_state": "INSIDE_VALUE"
+  },
+  "contract": "CL",
+  "created_at": "2026-01-14T14:05:00Z",
+  "detected_changes": [],
+  "expiry_policy": {
+    "expires_at": "2026-01-14T20:05:00Z",
+    "reason": "expires_with_briefing_window"
+  },
+  "history": [
+    {
+      "change_summary": "Initialized watch at revision 1 in ARMED_WAITING with WAIT.",
+      "detected_change_kinds": [],
+      "evaluated_at": "2026-01-14T14:05:00Z",
+      "packet_timestamp": "2026-01-14T14:05:00Z",
+      "prior_revision": null,
+      "prior_watch_id": null,
+      "revision": 1,
+      "routing_recommendation": "WAIT",
+      "state": "ARMED_WAITING",
+      "terminal_reason": null,
+      "transition_reason": "initialized",
+      "trigger_truth_state": "NOT_OBSERVED"
+    }
+  ],
+  "invalidation_rules": [
+    {
+      "comparison": "LESS_THAN_OR_EQUAL",
+      "description": "A break below developing VAL 72.9 invalidates the bullish or balanced watch framing.",
+      "effective_at": null,
+      "flag": null,
+      "kind": "PRICE_BREACH",
+      "price_level": 72.9,
+      "provenance": [
+        {
+          "detail": "The invalidation level is taken directly from the developing value boundary.",
+          "kind": "field",
+          "observed_at": "2026-01-14T14:05:00Z",
+          "provenance_id": "price_level",
+          "source_path": "market_packet.current_session_val",
+          "value": "72.9"
+        },
+        {
+          "detail": "The comparison direction is selected from the deterministic directional lean.",
+          "kind": "derived_condition",
+          "observed_at": "2026-01-14T14:05:00Z",
+          "provenance_id": "comparison",
+          "source_path": "derived.invalidation_comparison",
+          "value": "LESS_THAN_OR_EQUAL"
+        }
+      ],
+      "rule_id": "price_structure_break"
+    }
+  ],
+  "last_evaluated_at": "2026-01-14T14:05:00Z",
+  "last_observation": {
+    "context_change": "ARMED_WAITING",
+    "note": "Watch armed on price_level_touch.",
+    "observed_at": "2026-01-14T14:05:00Z",
+    "trigger_truth_state": "NOT_OBSERVED"
+  },
+  "operator_claims": [
+    {
+      "category": "state",
+      "claim_id": "watch_state_reason",
+      "evidence_fields": [
+        "context_snapshot.current_price",
+        "context_snapshot.value_location_state",
+        "trigger_payload.family"
+      ],
+      "provenance": [
+        {
+          "detail": "The watch state is the deterministic lifecycle output at the current evaluation time.",
+          "kind": "derived_condition",
+          "observed_at": "2026-01-14T14:05:00Z",
+          "provenance_id": "watch_state",
+          "source_path": "derived.watch_state",
+          "value": "ARMED_WAITING"
+        },
+        {
+          "detail": "Current price anchors the operator-facing watch state summary.",
+          "kind": "field",
+          "observed_at": "2026-01-14T14:05:00Z",
+          "provenance_id": "current_price",
+          "source_path": "context_snapshot.current_price",
+          "value": "73.3"
+        },
+        {
+          "detail": "The active price-touch level anchors the watch monitoring statement.",
+          "kind": "field",
+          "observed_at": "2026-01-14T14:05:00Z",
+          "provenance_id": "trigger_price_level",
+          "source_path": "trigger_payload.price_level",
+          "value": "73.35"
+        },
+        {
+          "detail": "Value location anchors the current or changed value-context reference.",
+          "kind": "field",
+          "observed_at": "2026-01-14T14:05:00Z",
+          "provenance_id": "value_location_state",
+          "source_path": "context_snapshot.value_location_state",
+          "value": "INSIDE_VALUE"
+        },
+        {
+          "detail": "Trigger truth state anchors whether the watch is still waiting or observed.",
+          "kind": "derived_condition",
+          "observed_at": "2026-01-14T14:05:00Z",
+          "provenance_id": "trigger_truth_state",
+          "source_path": "derived.trigger_truth_state",
+          "value": "NOT_OBSERVED"
+        }
+      ],
+      "statement": "CL watch is armed_waiting with price-touch monitoring at 73.35 while current price is 73.3 and value remains inside_value."
+    },
+    {
+      "category": "routing",
+      "claim_id": "watch_routing_reason",
+      "evidence_fields": [
+        "routing_recommendation",
+        "context_snapshot.freshness_state",
+        "context_snapshot.session_access_state"
+      ],
+      "provenance": [
+        {
+          "detail": "Routing recommendation is the deterministic operator action output.",
+          "kind": "derived_condition",
+          "observed_at": "2026-01-14T14:05:00Z",
+          "provenance_id": "routing_recommendation",
+          "source_path": "derived.routing_recommendation",
+          "value": "WAIT"
+        },
+        {
+          "detail": "Trigger truth state informs whether the operator must keep waiting or requery Stage B.",
+          "kind": "derived_condition",
+          "observed_at": "2026-01-14T14:05:00Z",
+          "provenance_id": "trigger_truth_state",
+          "source_path": "derived.trigger_truth_state",
+          "value": "NOT_OBSERVED"
+        },
+        {
+          "detail": "Freshness state constrains whether waiting is a contamination hold or a clean watch state.",
+          "kind": "field",
+          "observed_at": "2026-01-14T14:05:00Z",
+          "provenance_id": "freshness_state",
+          "source_path": "context_snapshot.freshness_state",
+          "value": "FRESH"
+        },
+        {
+          "detail": "Session access state constrains whether waiting is a lockout hold.",
+          "kind": "field",
+          "observed_at": "2026-01-14T14:05:00Z",
+          "provenance_id": "session_access_state",
+          "source_path": "context_snapshot.session_access_state",
+          "value": "INSIDE_ALLOWED_HOURS"
+        }
+      ],
+      "statement": "Keep the operator in WAIT because the watch has not yet unlocked deterministic reanalysis."
+    }
+  ],
+  "operator_summary": "CL watch is armed_waiting with price-touch monitoring at 73.35 while current price is 73.3 and value remains inside_value. Keep the operator in WAIT because the watch has not yet unlocked deterministic reanalysis.",
+  "operator_summary_claim_ids": [
+    "watch_state_reason",
+    "watch_routing_reason"
+  ],
+  "post_trigger_policy": "STRUCTURE_CONFIRMATION_REQUIRED",
+  "prior_revision": null,
+  "prior_watch_id": null,
+  "revision": 1,
+  "routing_recommendation": "WAIT",
+  "routing_target": "NONE",
+  "source_kind": "premarket_briefing",
+  "source_refs": {
+    "active_trigger_id": "cl-trigger-current_session_vah-20260114t140500z",
+    "briefing_id": "cl-briefing-20260114t140500z",
+    "preserved_contract_analysis_ref": null,
+    "trigger_ids": [
+      "cl-trigger-current_session_vah-20260114t140500z",
+      "cl-trigger-recheck-20260114t140500z"
+    ]
+  },
+  "state": "ARMED_WAITING",
+  "terminal_reason": null,
+  "trigger_payload": {
+    "buffer_ticks": 0,
+    "family": "price_level_touch",
+    "price_level": 73.35,
+    "recheck_at_time": null
+  },
+  "updated_at": "2026-01-14T14:05:00Z",
+  "watch_id": "cl-watch-20260114t140500z"
+}

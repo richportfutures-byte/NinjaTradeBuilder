@@ -1,0 +1,136 @@
+{
+  "$schema": "historical_packet_v1",
+  "attached_visuals": {
+    "$schema": "attached_visuals_v1",
+    "daily_chart_attached": true,
+    "dom_snapshot_attached": true,
+    "execution_chart_attached": true,
+    "footprint_chart_attached": true,
+    "higher_timeframe_chart_attached": true,
+    "tpo_chart_attached": true,
+    "volume_profile_attached": true
+  },
+  "challenge_state": {
+    "$schema": "challenge_state_v1",
+    "cooldown_after_stopout_minutes": 30,
+    "current_balance": 50000.0,
+    "current_open_positions": [],
+    "daily_loss_stop_dollars": 10000.0,
+    "daily_realized_pnl": 0.0,
+    "event_lockout_minutes_after": 5,
+    "event_lockout_minutes_before": 15,
+    "last_stopout_time_by_contract": {
+      "6E": null,
+      "CL": null,
+      "ES": null,
+      "MGC": null,
+      "NQ": null,
+      "ZN": null
+    },
+    "last_trade_direction_by_contract": {
+      "6E": null,
+      "CL": null,
+      "ES": null,
+      "MGC": null,
+      "NQ": null,
+      "ZN": null
+    },
+    "max_position_size_by_contract": {
+      "6E": 4,
+      "CL": 2,
+      "ES": 2,
+      "MGC": 12,
+      "NQ": 2,
+      "ZN": 4
+    },
+    "max_risk_per_trade_dollars": 1450.0,
+    "max_trades_per_contract_per_day": 3,
+    "max_trades_per_day": 60,
+    "minimum_reward_to_risk": 1.5,
+    "profit_target_dollars": 400000.0,
+    "trades_today_all": 0,
+    "trades_today_by_contract": {
+      "6E": 0,
+      "CL": 0,
+      "ES": 0,
+      "MGC": 0,
+      "NQ": 0,
+      "ZN": 0
+    }
+  },
+  "contract_metadata": {
+    "$schema": "contract_metadata_v1",
+    "allowed_hours_end_et": "14:15",
+    "allowed_hours_start_et": "09:00",
+    "contract": "CL",
+    "dollar_per_tick": 10.0,
+    "max_position_size": 2,
+    "point_value": 1000.0,
+    "slippage_ticks": 2,
+    "tick_size": 0.01
+  },
+  "contract_specific_extension": {
+    "$schema": "contract_specific_extension_v1",
+    "contract": "CL",
+    "dom_liquidity_summary": "Bid stack rebuilding near session VWAP.",
+    "eia_timing": {
+      "minutes_until": 85,
+      "scheduled_time": "2026-01-14T15:30:00Z",
+      "status": "scheduled"
+    },
+    "liquidity_sweep_summary": "Sell-side sweep below the overnight low failed to continue.",
+    "oil_specific_headlines": "No new OPEC or geopolitical headlines.",
+    "realized_volatility_context": "normal"
+  },
+  "market_packet": {
+    "$schema": "market_packet_v1",
+    "avg_20d_session_range": 1.68,
+    "contract": "CL",
+    "cross_market_context": {
+      "dxy_direction": "flat",
+      "equity_tone": "risk-on"
+    },
+    "cumulative_delta": 1842.0,
+    "current_price": 73.35,
+    "current_session_poc": 73.08,
+    "current_session_vah": 73.34,
+    "current_session_val": 72.9,
+    "current_volume_vs_average": 1.12,
+    "data_quality_flags": [],
+    "event_calendar_remainder": [
+      {
+        "event_state": "upcoming",
+        "minutes_until": 85,
+        "name": "EIA Petroleum Status Report",
+        "tier": 1,
+        "time": "2026-01-14T15:30:00Z"
+      }
+    ],
+    "key_hvns": [
+      73.1,
+      72.8
+    ],
+    "key_lvns": [
+      73.5
+    ],
+    "major_higher_timeframe_levels": [
+      74.0,
+      72.0
+    ],
+    "opening_type": "Open-Auction",
+    "overnight_high": 73.2,
+    "overnight_low": 72.55,
+    "previous_session_poc": 72.82,
+    "previous_session_vah": 73.1,
+    "previous_session_val": 72.5,
+    "prior_day_close": 72.88,
+    "prior_day_high": 73.8,
+    "prior_day_low": 72.1,
+    "session_open": 72.95,
+    "session_range": 1.04,
+    "session_type": "RTH",
+    "singles_excess_poor_high_low_notes": "No structural defects flagged in the prebuilt packet.",
+    "timestamp": "2026-01-14T15:12:00Z",
+    "vwap": 73.07
+  }
+}

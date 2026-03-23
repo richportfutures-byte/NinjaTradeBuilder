@@ -1,0 +1,282 @@
+{
+  "$schema": "readiness_v2_watch_update_artifact_v1",
+  "contract": "6E",
+  "evaluation_timestamp": "2026-01-14T15:12:00Z",
+  "mode": "update",
+  "prior_watch_id": "6e-watch-20260114t140500z",
+  "watch": {
+    "$schema": "readiness_watch_v1",
+    "active_trigger_family": "price_level_touch",
+    "allowed_next_actions": [
+      "ROUTE_STAGE_AB_REANALYSIS",
+      "ARCHIVE_WATCH"
+    ],
+    "context_snapshot": {
+      "active_data_quality_flags": [],
+      "asia_high_low": {
+        "high": 1.0892,
+        "low": 1.0876
+      },
+      "contamination_reasons": [],
+      "cross_market_context": "dxy direction weakening",
+      "current_price": 1.0914,
+      "directional_lean": "BULLISH",
+      "dxy_context": "weakening",
+      "europe_initiative_status": "Europe drove higher",
+      "evaluation_timestamp": "2026-01-14T15:12:00Z",
+      "event_lockout_active": false,
+      "event_risk_state": "CLEAR",
+      "freshness_state": "FRESH",
+      "governance_lockout_active": false,
+      "lockout_reasons": [],
+      "london_high_low": {
+        "high": 1.0914,
+        "low": 1.0886
+      },
+      "minutes_until_next_event": 48,
+      "next_event_name": "ECB Speaker",
+      "next_event_time": "2026-01-14T16:00:00Z",
+      "ny_high_low_so_far": {
+        "high": 1.0916,
+        "low": 1.0898
+      },
+      "packet_age_seconds": 0,
+      "packet_timestamp": "2026-01-14T15:12:00Z",
+      "session_access_state": "INSIDE_ALLOWED_HOURS",
+      "value_location_state": "ABOVE_VAH"
+    },
+    "contract": "6E",
+    "created_at": "2026-01-14T14:05:00Z",
+    "detected_changes": [
+      {
+        "detail": "Value location moved from INSIDE_VALUE to ABOVE_VAH.",
+        "from_value": "INSIDE_VALUE",
+        "kind": "value_location_change",
+        "to_value": "ABOVE_VAH"
+      },
+      {
+        "detail": "Trigger truth moved from NOT_OBSERVED to OBSERVED.",
+        "from_value": "NOT_OBSERVED",
+        "kind": "trigger_truth_change",
+        "to_value": "OBSERVED"
+      },
+      {
+        "detail": "Operator routing changed from WAIT to REQUERY_STAGE_B.",
+        "from_value": "WAIT",
+        "kind": "routing_recommendation_change",
+        "to_value": "REQUERY_STAGE_B"
+      }
+    ],
+    "expiry_policy": {
+      "expires_at": "2026-01-14T20:05:00Z",
+      "reason": "expires_with_briefing_window"
+    },
+    "history": [
+      {
+        "change_summary": "Initialized watch at revision 1 in ARMED_WAITING with WAIT.",
+        "detected_change_kinds": [],
+        "evaluated_at": "2026-01-14T14:05:00Z",
+        "packet_timestamp": "2026-01-14T14:05:00Z",
+        "prior_revision": null,
+        "prior_watch_id": null,
+        "revision": 1,
+        "routing_recommendation": "WAIT",
+        "state": "ARMED_WAITING",
+        "terminal_reason": null,
+        "transition_reason": "initialized",
+        "trigger_truth_state": "NOT_OBSERVED"
+      },
+      {
+        "change_summary": "Trigger conditions advanced the watch to READY_FOR_REANALYSIS with REQUERY_STAGE_B.",
+        "detected_change_kinds": [
+          "value_location_change",
+          "trigger_truth_change",
+          "routing_recommendation_change"
+        ],
+        "evaluated_at": "2026-01-14T15:12:00Z",
+        "packet_timestamp": "2026-01-14T15:12:00Z",
+        "prior_revision": 1,
+        "prior_watch_id": "6e-watch-20260114t140500z",
+        "revision": 2,
+        "routing_recommendation": "REQUERY_STAGE_B",
+        "state": "READY_FOR_REANALYSIS",
+        "terminal_reason": null,
+        "transition_reason": "trigger_requery_ready",
+        "trigger_truth_state": "OBSERVED"
+      }
+    ],
+    "invalidation_rules": [
+      {
+        "comparison": "LESS_THAN_OR_EQUAL",
+        "description": "A break below developing VAL 1.0899 invalidates the bullish or balanced watch framing.",
+        "effective_at": null,
+        "flag": null,
+        "kind": "PRICE_BREACH",
+        "price_level": 1.0899,
+        "provenance": [
+          {
+            "detail": "The invalidation level is taken directly from the developing value boundary.",
+            "kind": "field",
+            "observed_at": "2026-01-14T14:05:00Z",
+            "provenance_id": "price_level",
+            "source_path": "market_packet.current_session_val",
+            "value": "1.0899"
+          },
+          {
+            "detail": "The comparison direction is selected from the deterministic directional lean.",
+            "kind": "derived_condition",
+            "observed_at": "2026-01-14T14:05:00Z",
+            "provenance_id": "comparison",
+            "source_path": "derived.invalidation_comparison",
+            "value": "LESS_THAN_OR_EQUAL"
+          }
+        ],
+        "rule_id": "price_structure_break"
+      }
+    ],
+    "last_evaluated_at": "2026-01-14T15:12:00Z",
+    "last_observation": {
+      "context_change": "READY_FOR_REANALYSIS",
+      "note": "Deterministic trigger and structure conditions now support a fresh Stage B requery.",
+      "observed_at": "2026-01-14T15:12:00Z",
+      "trigger_truth_state": "OBSERVED"
+    },
+    "operator_claims": [
+      {
+        "category": "state",
+        "claim_id": "watch_state_reason",
+        "evidence_fields": [
+          "context_snapshot.current_price",
+          "context_snapshot.value_location_state",
+          "trigger_payload.family"
+        ],
+        "provenance": [
+          {
+            "detail": "The watch state is the deterministic lifecycle output at the current evaluation time.",
+            "kind": "derived_condition",
+            "observed_at": "2026-01-14T15:12:00Z",
+            "provenance_id": "watch_state",
+            "source_path": "derived.watch_state",
+            "value": "READY_FOR_REANALYSIS"
+          },
+          {
+            "detail": "Current price anchors the operator-facing watch state summary.",
+            "kind": "field",
+            "observed_at": "2026-01-14T15:12:00Z",
+            "provenance_id": "current_price",
+            "source_path": "context_snapshot.current_price",
+            "value": "1.0914"
+          },
+          {
+            "detail": "The active price-touch level anchors the watch monitoring statement.",
+            "kind": "field",
+            "observed_at": "2026-01-14T15:12:00Z",
+            "provenance_id": "trigger_price_level",
+            "source_path": "trigger_payload.price_level",
+            "value": "1.0914"
+          },
+          {
+            "detail": "Value location anchors the current or changed value-context reference.",
+            "kind": "field",
+            "observed_at": "2026-01-14T15:12:00Z",
+            "provenance_id": "value_location_state",
+            "source_path": "context_snapshot.value_location_state",
+            "value": "ABOVE_VAH"
+          },
+          {
+            "detail": "Prior value location anchors the value-context transition reference.",
+            "kind": "field",
+            "observed_at": "2026-01-14T14:05:00Z",
+            "provenance_id": "prior_value_location_state",
+            "source_path": "prior_watch.context_snapshot.value_location_state",
+            "value": "INSIDE_VALUE"
+          },
+          {
+            "detail": "Trigger truth state anchors whether the watch is still waiting or observed.",
+            "kind": "derived_condition",
+            "observed_at": "2026-01-14T15:12:00Z",
+            "provenance_id": "trigger_truth_state",
+            "source_path": "derived.trigger_truth_state",
+            "value": "OBSERVED"
+          }
+        ],
+        "statement": "6E watch is ready_for_reanalysis after price_level_touch observed at 1.0914 and value shifted from inside_value to above_vah."
+      },
+      {
+        "category": "routing",
+        "claim_id": "watch_routing_reason",
+        "evidence_fields": [
+          "routing_recommendation",
+          "context_snapshot.freshness_state",
+          "context_snapshot.session_access_state"
+        ],
+        "provenance": [
+          {
+            "detail": "Routing recommendation is the deterministic operator action output.",
+            "kind": "derived_condition",
+            "observed_at": "2026-01-14T15:12:00Z",
+            "provenance_id": "routing_recommendation",
+            "source_path": "derived.routing_recommendation",
+            "value": "REQUERY_STAGE_B"
+          },
+          {
+            "detail": "Trigger truth state informs whether the operator must keep waiting or requery Stage B.",
+            "kind": "derived_condition",
+            "observed_at": "2026-01-14T15:12:00Z",
+            "provenance_id": "trigger_truth_state",
+            "source_path": "derived.trigger_truth_state",
+            "value": "OBSERVED"
+          },
+          {
+            "detail": "Freshness state constrains whether waiting is a contamination hold or a clean watch state.",
+            "kind": "field",
+            "observed_at": "2026-01-14T15:12:00Z",
+            "provenance_id": "freshness_state",
+            "source_path": "context_snapshot.freshness_state",
+            "value": "FRESH"
+          },
+          {
+            "detail": "Session access state constrains whether waiting is a lockout hold.",
+            "kind": "field",
+            "observed_at": "2026-01-14T15:12:00Z",
+            "provenance_id": "session_access_state",
+            "source_path": "context_snapshot.session_access_state",
+            "value": "INSIDE_ALLOWED_HOURS"
+          }
+        ],
+        "statement": "Route the operator to REQUERY_STAGE_B because the trigger is observed and structure confirmation is satisfied."
+      }
+    ],
+    "operator_summary": "6E watch is ready_for_reanalysis after price_level_touch observed at 1.0914 and value shifted from inside_value to above_vah. Route the operator to REQUERY_STAGE_B because the trigger is observed and structure confirmation is satisfied.",
+    "operator_summary_claim_ids": [
+      "watch_state_reason",
+      "watch_routing_reason"
+    ],
+    "post_trigger_policy": "STRUCTURE_CONFIRMATION_REQUIRED",
+    "prior_revision": 1,
+    "prior_watch_id": "6e-watch-20260114t140500z",
+    "revision": 2,
+    "routing_recommendation": "REQUERY_STAGE_B",
+    "routing_target": "STAGE_AB_REANALYSIS",
+    "source_kind": "premarket_briefing",
+    "source_refs": {
+      "active_trigger_id": "6e-trigger-current_session_vah-20260114t140500z",
+      "briefing_id": "6e-briefing-20260114t140500z",
+      "preserved_contract_analysis_ref": null,
+      "trigger_ids": [
+        "6e-trigger-current_session_vah-20260114t140500z",
+        "6e-trigger-recheck-20260114t140500z"
+      ]
+    },
+    "state": "READY_FOR_REANALYSIS",
+    "terminal_reason": null,
+    "trigger_payload": {
+      "buffer_ticks": 0,
+      "family": "price_level_touch",
+      "price_level": 1.0914,
+      "recheck_at_time": null
+    },
+    "updated_at": "2026-01-14T15:12:00Z",
+    "watch_id": "6e-watch-20260114t140500z"
+  }
+}

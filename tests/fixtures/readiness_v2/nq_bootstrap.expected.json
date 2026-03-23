@@ -1,0 +1,816 @@
+{
+  "$schema": "readiness_v2_bootstrap_artifact_v1",
+  "briefing": {
+    "$schema": "premarket_briefing_v1",
+    "briefing_id": "nq-briefing-20260114t150500z",
+    "candidate_trigger_summaries": [
+      {
+        "family": "price_level_touch",
+        "label": "Touch current session vah",
+        "price_level": 18128.0,
+        "provenance": [
+          {
+            "detail": "The trigger level comes directly from the selected structural level on the packet.",
+            "kind": "field",
+            "observed_at": "2026-01-14T15:05:00Z",
+            "provenance_id": "trigger_level",
+            "source_path": "market_packet.current_session_vah",
+            "value": "18128"
+          },
+          {
+            "detail": "Directional lean determines which side of value can unlock reanalysis.",
+            "kind": "derived_condition",
+            "observed_at": "2026-01-14T15:05:00Z",
+            "provenance_id": "directional_lean",
+            "source_path": "derived.directional_lean",
+            "value": "BULLISH"
+          }
+        ],
+        "recheck_at_time": null,
+        "summary": "Escalate only if NQ tags 18128, the next structural level in the current bullish framing.",
+        "supporting_claim_ids": [
+          "value_support_or_resistance",
+          "flow_alignment"
+        ],
+        "unlock_action": "ROUTE_STAGE_AB_REANALYSIS"
+      },
+      {
+        "family": "recheck_at_time",
+        "label": "Timed recheck",
+        "price_level": null,
+        "provenance": [
+          {
+            "detail": "The timed recheck is deterministically resolved from the creation time and briefing expiry.",
+            "kind": "field",
+            "observed_at": "2026-01-14T15:05:00Z",
+            "provenance_id": "recheck_at_time",
+            "source_path": "derived.recheck_at_time",
+            "value": "2026-01-14T15:20:00Z"
+          },
+          {
+            "detail": "The timed recheck remains bounded by the briefing expiry.",
+            "kind": "field",
+            "observed_at": "2026-01-14T15:05:00Z",
+            "provenance_id": "expires_at",
+            "source_path": "derived.briefing_expires_at",
+            "value": "2026-01-14T21:05:00Z"
+          }
+        ],
+        "recheck_at_time": "2026-01-14T15:20:00Z",
+        "summary": "Re-evaluate the watch at 2026-01-14T15:20:00+00:00 if the price trigger remains unobserved.",
+        "supporting_claim_ids": [
+          "value_support_or_resistance"
+        ],
+        "unlock_action": "ROUTE_STAGE_AB_REANALYSIS"
+      }
+    ],
+    "contract": "NQ",
+    "created_at": "2026-01-14T15:05:00Z",
+    "expires_at": "2026-01-14T21:05:00Z",
+    "feature_snapshot": {
+      "bond_yield_context": "rising",
+      "cumulative_delta": 8430.0,
+      "current_price": 18120.0,
+      "current_session_poc": 18094.5,
+      "current_session_vah": 18128.0,
+      "current_session_val": 18062.25,
+      "current_volume_vs_average": 1.14,
+      "directional_lean": "BULLISH",
+      "macro_release_context": "No released macro event is active on the packet; next Megacap Earnings in 355 minutes.",
+      "megacap_leadership_posture": "megacap leadership is supportive (2 up, 1 flat)",
+      "opening_type": "Open-Drive",
+      "price_location_vs_value": "INSIDE_VALUE",
+      "price_location_vs_vwap": "ABOVE",
+      "prior_day_high": 18188.0,
+      "prior_day_low": 17982.0,
+      "relative_strength_vs_es": 1.18,
+      "session_open": 18055.5,
+      "session_range_ratio": 0.49607843137254903,
+      "vwap": 18098.25
+    },
+    "invalidation_conditions": [
+      {
+        "comparison": "LESS_THAN_OR_EQUAL",
+        "description": "A break below developing VAL 18062.25 invalidates the bullish or balanced watch framing.",
+        "effective_at": null,
+        "flag": null,
+        "kind": "PRICE_BREACH",
+        "price_level": 18062.25,
+        "provenance": [
+          {
+            "detail": "The invalidation level is taken directly from the developing value boundary.",
+            "kind": "field",
+            "observed_at": "2026-01-14T15:05:00Z",
+            "provenance_id": "price_level",
+            "source_path": "market_packet.current_session_val",
+            "value": "18062.25"
+          },
+          {
+            "detail": "The comparison direction is selected from the deterministic directional lean.",
+            "kind": "derived_condition",
+            "observed_at": "2026-01-14T15:05:00Z",
+            "provenance_id": "comparison",
+            "source_path": "derived.invalidation_comparison",
+            "value": "LESS_THAN_OR_EQUAL"
+          }
+        ],
+        "rule_id": "price_structure_break"
+      }
+    ],
+    "lockout_conditions": [
+      {
+        "begins_at": "2026-01-14T20:45:00Z",
+        "condition_id": "session_end_lockout",
+        "description": "The watch hard-stops at the NQ allowed-hours close.",
+        "ends_at": null,
+        "kind": "SESSION_LOCKOUT",
+        "provenance": [
+          {
+            "detail": "The session close lockout is anchored to the contract allowed-hours end.",
+            "kind": "field",
+            "observed_at": "2026-01-14T15:05:00Z",
+            "provenance_id": "allowed_hours_end_et",
+            "source_path": "contract_metadata.allowed_hours_end_et",
+            "value": "15:45"
+          },
+          {
+            "detail": "The ET session close is converted into the deterministic UTC lockout timestamp.",
+            "kind": "field",
+            "observed_at": "2026-01-14T15:05:00Z",
+            "provenance_id": "session_end_time",
+            "source_path": "derived.session_end_time",
+            "value": "2026-01-14T20:45:00Z"
+          }
+        ],
+        "reason_code": "session_close"
+      },
+      {
+        "begins_at": "2026-01-14T20:45:00Z",
+        "condition_id": "next_event_lockout",
+        "description": "Megacap Earnings activates a deterministic event lockout window around the scheduled release.",
+        "ends_at": "2026-01-14T21:05:00Z",
+        "kind": "EVENT_LOCKOUT",
+        "provenance": [
+          {
+            "detail": "The next event name anchors the event lockout description.",
+            "kind": "field",
+            "observed_at": "2026-01-14T15:05:00Z",
+            "provenance_id": "next_event_name",
+            "source_path": "market_packet.event_calendar_remainder[0].name",
+            "value": "Megacap Earnings"
+          },
+          {
+            "detail": "The lockout start is derived from the event time and the pre-event lockout minutes.",
+            "kind": "field",
+            "observed_at": "2026-01-14T15:05:00Z",
+            "provenance_id": "begins_at",
+            "source_path": "derived.event_lockout_window.begin",
+            "value": "2026-01-14T20:45:00Z"
+          },
+          {
+            "detail": "The lockout end is derived from the event time and the post-event lockout minutes.",
+            "kind": "field",
+            "observed_at": "2026-01-14T15:05:00Z",
+            "provenance_id": "ends_at",
+            "source_path": "derived.event_lockout_window.end",
+            "value": "2026-01-14T21:05:00Z"
+          }
+        ],
+        "reason_code": "megacap_earnings"
+      }
+    ],
+    "monitor_posture": "MONITOR",
+    "narrative_feature_thesis": "NQ is holding above VWAP 18098.25 and session POC 18094.5 with positive flow, keeping the prior-day high 18188 in play. Event context is 'No released macro event is active on the packet; next Megacap Earnings in 355 minutes.' while bond yields are 'rising' and megacap leadership is supportive (2 up, 1 flat). The next scheduled event is Megacap Earnings at 2026-01-14T21:00:00+00:00, which can hard-stop the NQ watch as the lockout window approaches.",
+    "narrative_feature_thesis_claim_ids": [
+      "value_support_or_resistance",
+      "macro_context",
+      "event_risk_window"
+    ],
+    "packet_timestamp": "2026-01-14T15:05:00Z",
+    "session_snapshot": {
+      "data_quality_flags": [],
+      "evaluation_timestamp": "2026-01-14T15:05:00Z",
+      "event_lockout_active": false,
+      "freshness_state": "FRESH",
+      "governance_lockout_active": false,
+      "minutes_until_next_event": 355,
+      "next_event_name": "Megacap Earnings",
+      "next_event_time": "2026-01-14T21:00:00Z",
+      "packet_age_seconds": 0,
+      "packet_timestamp": "2026-01-14T15:05:00Z",
+      "session_access_state": "INSIDE_ALLOWED_HOURS",
+      "session_type": "RTH"
+    },
+    "source_packet_ref": "historical_packet:NQ:2026-01-14T15:05:00+00:00",
+    "thesis_claims": [
+      {
+        "category": "structure",
+        "claim_id": "value_support_or_resistance",
+        "evidence_fields": [
+          "market_packet.current_price",
+          "market_packet.vwap",
+          "market_packet.current_session_vah",
+          "market_packet.current_session_val",
+          "market_packet.prior_day_high"
+        ],
+        "provenance": [
+          {
+            "detail": "Current NQ price anchors the value-context portion of the thesis.",
+            "kind": "field",
+            "observed_at": "2026-01-14T15:05:00Z",
+            "provenance_id": "current_price",
+            "source_path": "market_packet.current_price",
+            "value": "18120"
+          },
+          {
+            "detail": "VWAP anchors the directional structure reference.",
+            "kind": "field",
+            "observed_at": "2026-01-14T15:05:00Z",
+            "provenance_id": "vwap",
+            "source_path": "market_packet.vwap",
+            "value": "18098.25"
+          },
+          {
+            "detail": "Current session VAH anchors the NQ upside value boundary.",
+            "kind": "field",
+            "observed_at": "2026-01-14T15:05:00Z",
+            "provenance_id": "current_session_vah",
+            "source_path": "market_packet.current_session_vah",
+            "value": "18128"
+          },
+          {
+            "detail": "Current session VAL anchors the NQ downside value boundary.",
+            "kind": "field",
+            "observed_at": "2026-01-14T15:05:00Z",
+            "provenance_id": "current_session_val",
+            "source_path": "market_packet.current_session_val",
+            "value": "18062.25"
+          },
+          {
+            "detail": "Directional lean is derived from price vs session open, VWAP, and cumulative delta.",
+            "kind": "derived_condition",
+            "observed_at": "2026-01-14T15:05:00Z",
+            "provenance_id": "directional_lean",
+            "source_path": "derived.directional_lean",
+            "value": "BULLISH"
+          }
+        ],
+        "statement": "NQ is holding above VWAP 18098.25 and session POC 18094.5 with positive flow, keeping the prior-day high 18188 in play."
+      },
+      {
+        "category": "flow",
+        "claim_id": "flow_alignment",
+        "evidence_fields": [
+          "contract_specific_extension.relative_strength_vs_es",
+          "contract_specific_extension.megacap_leadership_table",
+          "market_packet.cumulative_delta",
+          "market_packet.current_volume_vs_average"
+        ],
+        "provenance": [
+          {
+            "detail": "Relative strength vs ES is carried directly into the NQ flow alignment claim.",
+            "kind": "field",
+            "observed_at": "2026-01-14T15:05:00Z",
+            "provenance_id": "relative_strength_vs_es",
+            "source_path": "contract_specific_extension.relative_strength_vs_es",
+            "value": "1.18"
+          },
+          {
+            "detail": "Megacap leadership posture is deterministically derived from the megacap leadership table.",
+            "kind": "derived_condition",
+            "observed_at": "2026-01-14T15:05:00Z",
+            "provenance_id": "megacap_leadership_posture",
+            "source_path": "derived.megacap_leadership_posture",
+            "value": "megacap leadership is supportive (2 up, 1 flat)"
+          },
+          {
+            "detail": "Cumulative delta anchors the flow direction reference.",
+            "kind": "field",
+            "observed_at": "2026-01-14T15:05:00Z",
+            "provenance_id": "cumulative_delta",
+            "source_path": "market_packet.cumulative_delta",
+            "value": "8430"
+          },
+          {
+            "detail": "Relative volume anchors the participation reference.",
+            "kind": "field",
+            "observed_at": "2026-01-14T15:05:00Z",
+            "provenance_id": "current_volume_vs_average",
+            "source_path": "market_packet.current_volume_vs_average",
+            "value": "1.14"
+          }
+        ],
+        "statement": "Relative strength vs ES is 1.18, megacap leadership is supportive (2 up, 1 flat), cumulative delta is 8430, and volume is 1.14x average."
+      },
+      {
+        "category": "risk",
+        "claim_id": "macro_context",
+        "evidence_fields": [
+          "market_packet.event_calendar_remainder",
+          "market_packet.cross_market_context.bond_yield_direction",
+          "contract_specific_extension.megacap_leadership_table"
+        ],
+        "provenance": [
+          {
+            "detail": "Macro release context is deterministically derived from released and upcoming NQ event calendar entries.",
+            "kind": "derived_condition",
+            "observed_at": "2026-01-14T15:05:00Z",
+            "provenance_id": "macro_release_context",
+            "source_path": "derived.macro_release_context",
+            "value": "No released macro event is active on the packet; next Megacap Earnings in 355 minutes."
+          },
+          {
+            "detail": "Bond yield direction is taken directly from the validated NQ cross-market context.",
+            "kind": "field",
+            "observed_at": "2026-01-14T15:05:00Z",
+            "provenance_id": "bond_yield_direction",
+            "source_path": "market_packet.cross_market_context.bond_yield_direction",
+            "value": "rising"
+          },
+          {
+            "detail": "Megacap leadership posture is deterministically derived from the megacap leadership table.",
+            "kind": "derived_condition",
+            "observed_at": "2026-01-14T15:05:00Z",
+            "provenance_id": "megacap_leadership_posture",
+            "source_path": "derived.megacap_leadership_posture",
+            "value": "megacap leadership is supportive (2 up, 1 flat)"
+          }
+        ],
+        "statement": "Event context is 'No released macro event is active on the packet; next Megacap Earnings in 355 minutes.' while bond yields are 'rising' and megacap leadership is supportive (2 up, 1 flat)."
+      },
+      {
+        "category": "risk",
+        "claim_id": "event_risk_window",
+        "evidence_fields": [
+          "market_packet.event_calendar_remainder",
+          "challenge_state.event_lockout_minutes_before",
+          "challenge_state.event_lockout_minutes_after"
+        ],
+        "provenance": [
+          {
+            "detail": "The next upcoming event name anchors the event-risk sentence.",
+            "kind": "field",
+            "observed_at": "2026-01-14T15:05:00Z",
+            "provenance_id": "next_event_name",
+            "source_path": "market_packet.event_calendar_remainder[0].name",
+            "value": "Megacap Earnings"
+          },
+          {
+            "detail": "The next upcoming event timestamp anchors the event-risk sentence.",
+            "kind": "field",
+            "observed_at": "2026-01-14T15:05:00Z",
+            "provenance_id": "next_event_time",
+            "source_path": "market_packet.event_calendar_remainder[0].time",
+            "value": "2026-01-14T21:00:00Z"
+          },
+          {
+            "detail": "The pre-event lockout window anchors the hard-stop reference.",
+            "kind": "field",
+            "observed_at": "2026-01-14T15:05:00Z",
+            "provenance_id": "event_lockout_minutes_before",
+            "source_path": "challenge_state.event_lockout_minutes_before",
+            "value": "15"
+          },
+          {
+            "detail": "The post-event lockout window anchors the hard-stop reference.",
+            "kind": "field",
+            "observed_at": "2026-01-14T15:05:00Z",
+            "provenance_id": "event_lockout_minutes_after",
+            "source_path": "challenge_state.event_lockout_minutes_after",
+            "value": "5"
+          }
+        ],
+        "statement": "The next scheduled event is Megacap Earnings at 2026-01-14T21:00:00+00:00, which can hard-stop the NQ watch as the lockout window approaches."
+      }
+    ]
+  },
+  "contract": "NQ",
+  "evaluation_timestamp": "2026-01-14T15:05:00Z",
+  "mode": "bootstrap",
+  "query_triggers": [
+    {
+      "$schema": "query_trigger_v1",
+      "contract": "NQ",
+      "created_at": "2026-01-14T15:05:00Z",
+      "deterministic_parameters": {
+        "buffer_ticks": 0,
+        "family": "price_level_touch",
+        "price_level": 18128.0,
+        "recheck_at_time": null
+      },
+      "expiry_policy": {
+        "expires_at": "2026-01-14T21:05:00Z",
+        "reason": "expires_with_briefing_window"
+      },
+      "family": "price_level_touch",
+      "invalidation_policy": [
+        {
+          "comparison": "LESS_THAN_OR_EQUAL",
+          "description": "A break below developing VAL 18062.25 invalidates the bullish or balanced watch framing.",
+          "effective_at": null,
+          "flag": null,
+          "kind": "PRICE_BREACH",
+          "price_level": 18062.25,
+          "provenance": [
+            {
+              "detail": "The invalidation level is taken directly from the developing value boundary.",
+              "kind": "field",
+              "observed_at": "2026-01-14T15:05:00Z",
+              "provenance_id": "price_level",
+              "source_path": "market_packet.current_session_val",
+              "value": "18062.25"
+            },
+            {
+              "detail": "The comparison direction is selected from the deterministic directional lean.",
+              "kind": "derived_condition",
+              "observed_at": "2026-01-14T15:05:00Z",
+              "provenance_id": "comparison",
+              "source_path": "derived.invalidation_comparison",
+              "value": "LESS_THAN_OR_EQUAL"
+            }
+          ],
+          "rule_id": "price_structure_break"
+        }
+      ],
+      "label": "Touch current session vah",
+      "mode": "deterministic",
+      "operator_claims": [
+        {
+          "category": "trigger",
+          "claim_id": "trigger_touch_level",
+          "evidence_fields": [
+            "feature_snapshot.current_session_vah",
+            "feature_snapshot.directional_lean"
+          ],
+          "provenance": [
+            {
+              "detail": "The trigger level comes directly from the selected structural level.",
+              "kind": "field",
+              "observed_at": "2026-01-14T15:05:00Z",
+              "provenance_id": "trigger_level",
+              "source_path": "market_packet.current_session_vah",
+              "value": "18128"
+            },
+            {
+              "detail": "Directional lean determines that a price-touch trigger can unlock reanalysis.",
+              "kind": "derived_condition",
+              "observed_at": "2026-01-14T15:05:00Z",
+              "provenance_id": "directional_lean",
+              "source_path": "derived.directional_lean",
+              "value": "BULLISH"
+            }
+          ],
+          "statement": "Escalate for fresh Stage A+B reanalysis if NQ tags 18128 at current session vah."
+        },
+        {
+          "category": "invalidation",
+          "claim_id": "trigger_invalidation_guard",
+          "evidence_fields": [
+            "invalidation_policy.price_level",
+            "invalidation_policy.comparison"
+          ],
+          "provenance": [
+            {
+              "detail": "The invalidation level is taken directly from the developing value boundary.",
+              "kind": "field",
+              "observed_at": "2026-01-14T15:05:00Z",
+              "provenance_id": "price_level",
+              "source_path": "market_packet.current_session_val",
+              "value": "18062.25"
+            },
+            {
+              "detail": "The comparison direction is selected from the deterministic directional lean.",
+              "kind": "derived_condition",
+              "observed_at": "2026-01-14T15:05:00Z",
+              "provenance_id": "comparison",
+              "source_path": "derived.invalidation_comparison",
+              "value": "LESS_THAN_OR_EQUAL"
+            }
+          ],
+          "statement": "Keep the trigger active only while price holds above developing VAL 18062.25."
+        }
+      ],
+      "operator_explanation": "Escalate for fresh Stage A+B reanalysis if NQ tags 18128 at current session vah. Keep the trigger active only while price holds above developing VAL 18062.25.",
+      "operator_explanation_claim_ids": [
+        "trigger_touch_level",
+        "trigger_invalidation_guard"
+      ],
+      "post_trigger_policy": "STRUCTURE_CONFIRMATION_REQUIRED",
+      "source_briefing_id": "nq-briefing-20260114t150500z",
+      "supporting_claim_ids": [
+        "value_support_or_resistance",
+        "flow_alignment"
+      ],
+      "trigger_id": "nq-trigger-current_session_vah-20260114t150500z",
+      "unlock_action": "ROUTE_STAGE_AB_REANALYSIS",
+      "validation_status": "EXECUTABLE"
+    },
+    {
+      "$schema": "query_trigger_v1",
+      "contract": "NQ",
+      "created_at": "2026-01-14T15:05:00Z",
+      "deterministic_parameters": {
+        "buffer_ticks": null,
+        "family": "recheck_at_time",
+        "price_level": null,
+        "recheck_at_time": "2026-01-14T15:20:00Z"
+      },
+      "expiry_policy": {
+        "expires_at": "2026-01-14T21:05:00Z",
+        "reason": "expires_with_briefing_window"
+      },
+      "family": "recheck_at_time",
+      "invalidation_policy": [
+        {
+          "comparison": "LESS_THAN_OR_EQUAL",
+          "description": "A break below developing VAL 18062.25 invalidates the bullish or balanced watch framing.",
+          "effective_at": null,
+          "flag": null,
+          "kind": "PRICE_BREACH",
+          "price_level": 18062.25,
+          "provenance": [
+            {
+              "detail": "The invalidation level is taken directly from the developing value boundary.",
+              "kind": "field",
+              "observed_at": "2026-01-14T15:05:00Z",
+              "provenance_id": "price_level",
+              "source_path": "market_packet.current_session_val",
+              "value": "18062.25"
+            },
+            {
+              "detail": "The comparison direction is selected from the deterministic directional lean.",
+              "kind": "derived_condition",
+              "observed_at": "2026-01-14T15:05:00Z",
+              "provenance_id": "comparison",
+              "source_path": "derived.invalidation_comparison",
+              "value": "LESS_THAN_OR_EQUAL"
+            }
+          ],
+          "rule_id": "price_structure_break"
+        }
+      ],
+      "label": "Timed recheck",
+      "mode": "deterministic",
+      "operator_claims": [
+        {
+          "category": "trigger",
+          "claim_id": "timed_recheck_window",
+          "evidence_fields": [
+            "deterministic_parameters.recheck_at_time",
+            "expiry_policy.expires_at"
+          ],
+          "provenance": [
+            {
+              "detail": "The recheck time is deterministically resolved from the briefing creation time and expiry.",
+              "kind": "field",
+              "observed_at": "2026-01-14T15:05:00Z",
+              "provenance_id": "recheck_at_time",
+              "source_path": "derived.recheck_at_time",
+              "value": "2026-01-14T15:20:00Z"
+            },
+            {
+              "detail": "The bounded recheck remains inside the briefing expiry window.",
+              "kind": "field",
+              "observed_at": "2026-01-14T15:05:00Z",
+              "provenance_id": "expires_at",
+              "source_path": "briefing.expires_at",
+              "value": "2026-01-14T21:05:00Z"
+            }
+          ],
+          "statement": "Force a bounded recheck at 2026-01-14T15:20:00+00:00 if the price trigger does not fire first."
+        }
+      ],
+      "operator_explanation": "Force a bounded recheck at 2026-01-14T15:20:00+00:00 if the price trigger does not fire first.",
+      "operator_explanation_claim_ids": [
+        "timed_recheck_window"
+      ],
+      "post_trigger_policy": "DIRECT_REANALYSIS",
+      "source_briefing_id": "nq-briefing-20260114t150500z",
+      "supporting_claim_ids": [
+        "value_support_or_resistance"
+      ],
+      "trigger_id": "nq-trigger-recheck-20260114t150500z",
+      "unlock_action": "ROUTE_STAGE_AB_REANALYSIS",
+      "validation_status": "EXECUTABLE"
+    }
+  ],
+  "watch": {
+    "$schema": "readiness_watch_v1",
+    "active_trigger_family": "price_level_touch",
+    "allowed_next_actions": [
+      "EVALUATE_TRIGGER",
+      "DISARM_WATCH"
+    ],
+    "context_snapshot": {
+      "active_data_quality_flags": [],
+      "bond_yield_context": "rising",
+      "contamination_reasons": [],
+      "current_price": 18120.0,
+      "directional_lean": "BULLISH",
+      "evaluation_timestamp": "2026-01-14T15:05:00Z",
+      "event_lockout_active": false,
+      "event_risk_state": "CLEAR",
+      "freshness_state": "FRESH",
+      "governance_lockout_active": false,
+      "lockout_reasons": [],
+      "macro_release_context": "No released macro event is active on the packet; next Megacap Earnings in 355 minutes.",
+      "megacap_leadership_posture": "megacap leadership is supportive (2 up, 1 flat)",
+      "minutes_until_next_event": 355,
+      "next_event_name": "Megacap Earnings",
+      "next_event_time": "2026-01-14T21:00:00Z",
+      "packet_age_seconds": 0,
+      "packet_timestamp": "2026-01-14T15:05:00Z",
+      "relative_strength_vs_es": 1.18,
+      "session_access_state": "INSIDE_ALLOWED_HOURS",
+      "value_location_state": "INSIDE_VALUE"
+    },
+    "contract": "NQ",
+    "created_at": "2026-01-14T15:05:00Z",
+    "detected_changes": [],
+    "expiry_policy": {
+      "expires_at": "2026-01-14T21:05:00Z",
+      "reason": "expires_with_briefing_window"
+    },
+    "history": [
+      {
+        "change_summary": "Initialized watch at revision 1 in ARMED_WAITING with WAIT.",
+        "detected_change_kinds": [],
+        "evaluated_at": "2026-01-14T15:05:00Z",
+        "packet_timestamp": "2026-01-14T15:05:00Z",
+        "prior_revision": null,
+        "prior_watch_id": null,
+        "revision": 1,
+        "routing_recommendation": "WAIT",
+        "state": "ARMED_WAITING",
+        "terminal_reason": null,
+        "transition_reason": "initialized",
+        "trigger_truth_state": "NOT_OBSERVED"
+      }
+    ],
+    "invalidation_rules": [
+      {
+        "comparison": "LESS_THAN_OR_EQUAL",
+        "description": "A break below developing VAL 18062.25 invalidates the bullish or balanced watch framing.",
+        "effective_at": null,
+        "flag": null,
+        "kind": "PRICE_BREACH",
+        "price_level": 18062.25,
+        "provenance": [
+          {
+            "detail": "The invalidation level is taken directly from the developing value boundary.",
+            "kind": "field",
+            "observed_at": "2026-01-14T15:05:00Z",
+            "provenance_id": "price_level",
+            "source_path": "market_packet.current_session_val",
+            "value": "18062.25"
+          },
+          {
+            "detail": "The comparison direction is selected from the deterministic directional lean.",
+            "kind": "derived_condition",
+            "observed_at": "2026-01-14T15:05:00Z",
+            "provenance_id": "comparison",
+            "source_path": "derived.invalidation_comparison",
+            "value": "LESS_THAN_OR_EQUAL"
+          }
+        ],
+        "rule_id": "price_structure_break"
+      }
+    ],
+    "last_evaluated_at": "2026-01-14T15:05:00Z",
+    "last_observation": {
+      "context_change": "ARMED_WAITING",
+      "note": "Watch armed on price_level_touch.",
+      "observed_at": "2026-01-14T15:05:00Z",
+      "trigger_truth_state": "NOT_OBSERVED"
+    },
+    "operator_claims": [
+      {
+        "category": "state",
+        "claim_id": "watch_state_reason",
+        "evidence_fields": [
+          "context_snapshot.current_price",
+          "context_snapshot.value_location_state",
+          "trigger_payload.family"
+        ],
+        "provenance": [
+          {
+            "detail": "The watch state is the deterministic lifecycle output at the current evaluation time.",
+            "kind": "derived_condition",
+            "observed_at": "2026-01-14T15:05:00Z",
+            "provenance_id": "watch_state",
+            "source_path": "derived.watch_state",
+            "value": "ARMED_WAITING"
+          },
+          {
+            "detail": "Current price anchors the operator-facing watch state summary.",
+            "kind": "field",
+            "observed_at": "2026-01-14T15:05:00Z",
+            "provenance_id": "current_price",
+            "source_path": "context_snapshot.current_price",
+            "value": "18120"
+          },
+          {
+            "detail": "The active price-touch level anchors the watch monitoring statement.",
+            "kind": "field",
+            "observed_at": "2026-01-14T15:05:00Z",
+            "provenance_id": "trigger_price_level",
+            "source_path": "trigger_payload.price_level",
+            "value": "18128"
+          },
+          {
+            "detail": "Value location anchors the current or changed value-context reference.",
+            "kind": "field",
+            "observed_at": "2026-01-14T15:05:00Z",
+            "provenance_id": "value_location_state",
+            "source_path": "context_snapshot.value_location_state",
+            "value": "INSIDE_VALUE"
+          },
+          {
+            "detail": "Trigger truth state anchors whether the watch is still waiting or observed.",
+            "kind": "derived_condition",
+            "observed_at": "2026-01-14T15:05:00Z",
+            "provenance_id": "trigger_truth_state",
+            "source_path": "derived.trigger_truth_state",
+            "value": "NOT_OBSERVED"
+          }
+        ],
+        "statement": "NQ watch is armed_waiting with price-touch monitoring at 18128 while current price is 18120 and value remains inside_value."
+      },
+      {
+        "category": "routing",
+        "claim_id": "watch_routing_reason",
+        "evidence_fields": [
+          "routing_recommendation",
+          "context_snapshot.freshness_state",
+          "context_snapshot.session_access_state"
+        ],
+        "provenance": [
+          {
+            "detail": "Routing recommendation is the deterministic operator action output.",
+            "kind": "derived_condition",
+            "observed_at": "2026-01-14T15:05:00Z",
+            "provenance_id": "routing_recommendation",
+            "source_path": "derived.routing_recommendation",
+            "value": "WAIT"
+          },
+          {
+            "detail": "Trigger truth state informs whether the operator must keep waiting or requery Stage B.",
+            "kind": "derived_condition",
+            "observed_at": "2026-01-14T15:05:00Z",
+            "provenance_id": "trigger_truth_state",
+            "source_path": "derived.trigger_truth_state",
+            "value": "NOT_OBSERVED"
+          },
+          {
+            "detail": "Freshness state constrains whether waiting is a contamination hold or a clean watch state.",
+            "kind": "field",
+            "observed_at": "2026-01-14T15:05:00Z",
+            "provenance_id": "freshness_state",
+            "source_path": "context_snapshot.freshness_state",
+            "value": "FRESH"
+          },
+          {
+            "detail": "Session access state constrains whether waiting is a lockout hold.",
+            "kind": "field",
+            "observed_at": "2026-01-14T15:05:00Z",
+            "provenance_id": "session_access_state",
+            "source_path": "context_snapshot.session_access_state",
+            "value": "INSIDE_ALLOWED_HOURS"
+          }
+        ],
+        "statement": "Keep the operator in WAIT because the watch has not yet unlocked deterministic reanalysis."
+      }
+    ],
+    "operator_summary": "NQ watch is armed_waiting with price-touch monitoring at 18128 while current price is 18120 and value remains inside_value. Keep the operator in WAIT because the watch has not yet unlocked deterministic reanalysis.",
+    "operator_summary_claim_ids": [
+      "watch_state_reason",
+      "watch_routing_reason"
+    ],
+    "post_trigger_policy": "STRUCTURE_CONFIRMATION_REQUIRED",
+    "prior_revision": null,
+    "prior_watch_id": null,
+    "revision": 1,
+    "routing_recommendation": "WAIT",
+    "routing_target": "NONE",
+    "source_kind": "premarket_briefing",
+    "source_refs": {
+      "active_trigger_id": "nq-trigger-current_session_vah-20260114t150500z",
+      "briefing_id": "nq-briefing-20260114t150500z",
+      "preserved_contract_analysis_ref": null,
+      "trigger_ids": [
+        "nq-trigger-current_session_vah-20260114t150500z",
+        "nq-trigger-recheck-20260114t150500z"
+      ]
+    },
+    "state": "ARMED_WAITING",
+    "terminal_reason": null,
+    "trigger_payload": {
+      "buffer_ticks": 0,
+      "family": "price_level_touch",
+      "price_level": 18128.0,
+      "recheck_at_time": null
+    },
+    "updated_at": "2026-01-14T15:05:00Z",
+    "watch_id": "nq-watch-20260114t150500z"
+  }
+}

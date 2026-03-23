@@ -37,3 +37,8 @@ jobs:
           GEMINI_API_KEY: ci-placeholder
           PYTHONDONTWRITEBYTECODE: "1"
         run: python tests/compiler_runtime_smoke_runner.py
+
+      - name: Run deterministic readiness v2 operator smoke path
+        env:
+          PYTHONDONTWRITEBYTECODE: "1"
+        run: python tests/readiness_v2_operator_smoke_runner.py
